@@ -1,0 +1,46 @@
+openapi: 3.0.3
+info:
+  description:  Careers account management API Documentation
+  version: versionNumber
+  title: Careers_Account_Management
+
+tags:
+  - name: API
+    description: Careers_Accounts_Management
+
+paths:
+  /users:
+    get:
+      tags:
+        - users
+      summary: returns a list of user objects
+      description: returns all users from db
+      operationId: get_users
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+#                $ref: 'user.yml#/components/schemas/User'
+                $ref: '#/components/schemas/User'
+
+components:
+  schemas:
+    User:
+      description: All data of the user
+      type: object
+      required:
+        - userId
+        - companyId
+      properties:
+        userId:
+          description: The ID of the user
+          example: 974e6a1c-c713-4fa2-8dbb-f1fdeea4f15c
+          readOnly: true
+          type: string
+          format: uuid
+        companyId:
+          description: The ID of the company that owns the user
+          type: string
+          format: uuid
