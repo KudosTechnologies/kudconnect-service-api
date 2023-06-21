@@ -1,10 +1,10 @@
-package ro.kudostech.hypercareers.service;
+package ro.kudostech.kudconnect.service;
 
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ro.kudostech.hypercareers.api.model.UserDto;
-import ro.kudostech.hypercareers.domain.User;
+import ro.kudostech.kudconnect.api.model.UserDto;
+import ro.kudostech.kudconnect.domain.User;
 
 import java.util.UUID;
 

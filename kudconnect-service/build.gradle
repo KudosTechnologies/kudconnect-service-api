@@ -32,7 +32,7 @@ dependencyManagement {
 }
 
 dependencies {
-    openapi "ro.kudostech:hypercareers-service-api:$hyperCareersApiVersion@yaml"
+    openapi "ro.kudostech:kudconnect-service-api:$KudConnectApiVersion@yaml"
     implementation 'org.springframework.modulith:spring-modulith-bom:1.0.0-SNAPSHOT'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -63,18 +63,18 @@ task copyOpenApiSpecs(type: Copy, group: 'openapi tools') {
     from configurations.openapi.singleFile.absolutePath
 
     include "**/*.yaml", "**/*.yml"
-    rename("hypercareers-service-api-" + project.property("hyperCareersApiVersion") + ".yaml", "hypercareers-service-api.yaml")
+    rename("kudconnect-service-api-" + project.property("KudConnectApiVersion") + ".yaml", "kudconnect-service-api.yaml")
     includeEmptyDirs = false
     into "$projectDir/spec/external/"
 }
 
 openApiGenerate {
     generatorName = "spring"
-    inputSpec = "$projectDir/spec/external/hypercareers-service-api.yaml".toString()
+    inputSpec = "$projectDir/spec/external/kudconnect-service-api.yaml".toString()
     outputDir = openApiServerDir
 
-    apiPackage = 'ro.kudostech.hypercareers.api'
-    modelPackage = 'ro.kudostech.hypercareers.api.model'
+    apiPackage = 'ro.kudostech.kudconnect.api'
+    modelPackage = 'ro.kudostech.kudconnect.api.model'
     modelNameSuffix = 'Dto'
     configOptions = [
             artifactId                    : project.baseName,

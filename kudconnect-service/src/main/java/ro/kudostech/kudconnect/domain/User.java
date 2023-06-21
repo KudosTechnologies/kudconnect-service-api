@@ -1,7 +1,6 @@
-package ro.kudostech.hypercareers.domain;
+package ro.kudostech.kudconnect.domain;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

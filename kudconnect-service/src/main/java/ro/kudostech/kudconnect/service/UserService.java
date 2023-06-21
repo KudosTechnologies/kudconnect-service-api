@@ -1,13 +1,9 @@
-package ro.kudostech.hypercareers.service;
+package ro.kudostech.kudconnect.service;
 
-import io.swagger.v3.oas.annotations.servers.Server;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ro.kudostech.hypercareers.api.model.UserDto;
-import ro.kudostech.hypercareers.domain.User;
-
-import java.util.UUID;
+import ro.kudostech.kudconnect.api.model.UserDto;
+import ro.kudostech.kudconnect.domain.User;
 
 @Service
 @RequiredArgsConstructor

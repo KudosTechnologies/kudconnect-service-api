@@ -1,4 +1,4 @@
-package ro.kudostech.hypercareers.service;
+package ro.kudostech.kudconnect.service;
 
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;

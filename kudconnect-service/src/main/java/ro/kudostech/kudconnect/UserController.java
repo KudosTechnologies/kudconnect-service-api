@@ -1,10 +1,10 @@
-package ro.kudostech.hypercareers;
+package ro.kudostech.kudconnect;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import ro.kudostech.hypercareers.api.UsersApi;
-import ro.kudostech.hypercareers.api.model.UserDto;
-import ro.kudostech.hypercareers.service.UserService;
+import ro.kudostech.kudconnect.api.UsersApi;
+import ro.kudostech.kudconnect.api.model.UserDto;
+import ro.kudostech.kudconnect.service.UserService;
 
 @RestController
 @RequiredArgsConstructor

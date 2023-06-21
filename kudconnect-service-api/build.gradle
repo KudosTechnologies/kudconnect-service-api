@@ -15,9 +15,9 @@ apply plugin: "maven-publish"
 group 'ro.kudostech'
 version '1.0.0-SNAPSHOT'
 
-def yamlFile = "$projectDir/spec/hypercareers-api.yaml".toString()
+def yamlFile = "$projectDir/spec/kudconnect-service-api.yaml".toString()
 def openApiMergerOutputDir = "$buildDir/merged/openapi/spec".toString()
-def openApiMergerOutputSpecName = "hypercareers-api.yaml".toString()
+def openApiMergerOutputSpecName = "kudconnect-service-api.yaml".toString()
 def openApiMergerOutputFile = "$openApiMergerOutputDir/$openApiMergerOutputSpecName".toString()
 
 task openApiMergerCopy(type: Copy) {
@@ -32,7 +32,7 @@ openApiValidate {
 
 task replaceApiVersion {
     doLast {
-        ant.replace (
+        ant.replace(
                 file: "$openApiMergerOutputFile",
                 token: 'versionNumber',
                 value: '1.0.0-SNAPSHOT'
@@ -60,5 +60,3 @@ publishing {
 tasks.withType(PublishToMavenLocal).configureEach {
     dependsOn replaceApiVersion
 }
-
-//publish.dependsOn tasks.replaceApiVersion
