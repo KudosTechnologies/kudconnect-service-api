@@ -17,6 +17,9 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    acceptanceImplementation {
+        extendsFrom testImplementation
+    }
 }
 
 java {
@@ -50,8 +53,24 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.modulith:spring-modulith-starter-test:1.0.0-SNAPSHOT'
+
+    // Test
+    testImplementation(platform("org.junit:junit-bom:5.9.3"))
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine'
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+    testImplementation 'com.h2database:h2:2.1.214'
+
+
+    // Acceptance tests
+    acceptanceImplementation('org.springframework.boot:spring-boot-starter-test')
+    acceptanceImplementation 'io.rest-assured:rest-assured'
+    acceptanceImplementation 'io.cucumber:cucumber-java:7.12.1'
+    acceptanceImplementation 'io.cucumber:cucumber-junit:7.12.1'
+    acceptanceImplementation 'io.cucumber:cucumber-spring:7.12.1'
+    acceptanceImplementation 'org.awaitility:awaitility:4.2.0'
+    acceptanceImplementation 'com.auth0:java-jwt:4.4.0'
 }
 
 
@@ -118,9 +137,22 @@ sourceSets {
         java.srcDir "src/test/java"
         resources.srcDir "src/test/resources"
     }
+    acceptance {
+        java.srcDir 'src/acceptance/java'
+//        java.srcDir "${openApiClientDir}/src/java"
+        resources.srcDir 'src/acceptance/bdd'
+        compileClasspath += sourceSets.main.output + configurations.testCompileClasspath + configurations.compileClasspath
+        runtimeClasspath += output + compileClasspath
+    }
 }
 
 processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+processTestResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+processAcceptanceResources {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 tasks.named("sourcesJar") { duplicatesStrategy = 'include' }
