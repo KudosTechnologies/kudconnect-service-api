@@ -22,7 +22,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Candidate'
+                description: Candidates results list
+                type: array
+                items:
+                  $ref: '#/components/schemas/Candidate'
     post:
       summary: Creates a new candidate
       operationId: createCandidate
@@ -41,7 +44,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Candidate'
+                $ref: '#/components/schemas/ResourceUUID'
   /candidates/{candidateId}:
     get:
       summary: Find candidate by ID
@@ -105,8 +108,8 @@ paths:
           description: ID of the candidate to delete
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
+            format: uuid
       responses:
         '200':
           description: Candidate deleted
@@ -134,3 +137,13 @@ components:
         appliedPosition:
           type: string
           description: The position the candidate applied for
+    ResourceUUID:
+      type: object
+      description: The UUID of the resource
+      properties:
+        id:
+          type: string
+          description: The UUID of the resource
+          example: 1a7588a5-a684-4cd7-8f98-11e660af2289
+          format: uuid
+

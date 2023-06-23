@@ -13,4 +13,9 @@ public abstract class CommonMapper {
   UUID stringToUUID(String id) {
     return id == null ? null : UUID.fromString(id);
   }
+
+  @Named("UUIDToString")
+  String uuidToString(UUID id) {
+    return id == null ? null : id.toString();
+  }
 }

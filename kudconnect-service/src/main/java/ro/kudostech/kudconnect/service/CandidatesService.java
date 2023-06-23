@@ -1,32 +1,40 @@
 package ro.kudostech.kudconnect.service;
 
+import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ro.kudostech.kudconnect.api.model.CandidateDto;
 import ro.kudostech.kudconnect.domain.Candidate;
+import ro.kudostech.kudconnect.repository.CandidateRepository;
 
 @Service
 @RequiredArgsConstructor
 public class CandidatesService {
-  private static final String STATIC_USER_ID = "c2135746-e634-4283-b352-f6179c1abd02";
 
+  private final CandidateRepository candidateRepository;
   private final CandidateMapper candidateMapper;
 
   public CandidateDto getCandidateById(String userId) {
-    if (userId.equals(STATIC_USER_ID)) {
-      return candidateMapper.toCandidateDto(getMockCandidate());
-    } else {
-      throw new RuntimeException("User with id " + userId + " not found");
-    }
+    return candidateRepository
+        .findById(userId)
+        .map(candidateMapper::toCandidateDto)
+        .orElseThrow(() -> new RuntimeException("User with id " + userId + " not found"));
+  }
+  public List<CandidateDto> getAllCandidates() {
+    return candidateRepository.findAll().stream().map(candidateMapper::toCandidateDto).toList();
   }
 
-  private Candidate getMockCandidate() {
-    return Candidate.builder()
-        .id(STATIC_USER_ID)
-        .firstName("John")
-        .lastName("Doe")
-        .email("upchh@example.com")
-        .phone("0123456789")
-        .build();
+  @Transactional
+  public CandidateDto createCandidate(CandidateDto candidateDto) {
+    Candidate candidate = candidateMapper.toCandidate(candidateDto);
+    candidateRepository.save(candidate);
+    return candidateMapper.toCandidateDto(candidate);
   }
+
+  @Transactional
+  public void deleteCandidate(String userId) {
+    candidateRepository.deleteById(userId);
+  }
+
 }
