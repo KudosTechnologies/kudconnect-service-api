@@ -1,46 +1,136 @@
 openapi: 3.0.3
 info:
-  description:  Careers account management API Documentation
   version: versionNumber
-  title: Careers_Account_Management
-
-tags:
-  - name: API
-    description: Careers_Accounts_Management
+  title: Online Recruiting Tool
+  description:  Online Recruiting Tool
+  contact:
+    name: API Support
+    email: contact@kudostech.com
+servers:
+  - url: https://api-url.com/v1
 
 paths:
-  /users:
+  /candidates:
     get:
+      summary: Lists all candidates
+      operationId: listCandidates
       tags:
-        - users
-      summary: returns a list of user objects
-      description: returns all users from db
-      operationId: get_users
+        - Candidates
       responses:
-        200:
-          description: Success
+        '200':
+          description: Successful operation
           content:
             application/json:
               schema:
-#                $ref: 'user.yml#/components/schemas/User'
-                $ref: '#/components/schemas/User'
-
+                $ref: '#/components/schemas/Candidate'
+    post:
+      summary: Creates a new candidate
+      operationId: createCandidate
+      tags:
+        - Candidates
+      requestBody:
+        description: Candidate object that needs to be added
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Candidate'
+        required: true
+      responses:
+        '201':
+          description: Candidate created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candidate'
+  /candidates/{candidateId}:
+    get:
+      summary: Find candidate by ID
+      operationId: getCandidateById
+      tags:
+        - Candidates
+      parameters:
+        - name: candidateId
+          in: path
+          description: ID of candidate to return
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candidate'
+        '404':
+          description: Candidate not found
+    put:
+      summary: Updates a candidate with a new data
+      operationId: updateCandidate
+      tags:
+        - Candidates
+      parameters:
+        - name: candidateId
+          in: path
+          description: ID of candidate that need to be updated
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Updated user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Candidate'
+        required: true
+      responses:
+        '200':
+          description: Candidate updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candidate'
+        '404':
+          description: Candidate not found
+    delete:
+      summary: Deletes a candidate
+      operationId: deleteCandidate
+      tags:
+        - Candidates
+      parameters:
+        - name: candidateId
+          in: path
+          description: ID of the candidate to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Candidate deleted
+        '404':
+          description: Candidate not found
 components:
   schemas:
-    User:
-      description: All data of the user
+    Candidate:
       type: object
-      required:
-        - userId
-        - companyId
       properties:
-        userId:
-          description: The ID of the user
-          example: 974e6a1c-c713-4fa2-8dbb-f1fdeea4f15c
-          readOnly: true
+        id:
           type: string
           format: uuid
-        companyId:
-          description: The ID of the company that owns the user
+        firstName:
           type: string
-          format: uuid
+        lastName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        status:
+          type: string
+          description: The status of the candidate (e.g., 'new', 'interview', 'hired')
+        appliedPosition:
+          type: string
+          description: The position the candidate applied for

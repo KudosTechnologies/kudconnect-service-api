@@ -7,8 +7,11 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-public class User {
+public class Candidate {
 
     private String id;
-    private String companyId;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String phone;
 }
