@@ -1,4 +1,4 @@
-package ro.kudostech.hypercareers.service;
+package ro.kudostech.kudconnect.service;
 
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
@@ -12,5 +12,10 @@ public abstract class CommonMapper {
   @Named("stringToUUID")
   UUID stringToUUID(String id) {
     return id == null ? null : UUID.fromString(id);
+  }
+
+  @Named("UUIDToString")
+  String uuidToString(UUID id) {
+    return id == null ? null : id.toString();
   }
 }

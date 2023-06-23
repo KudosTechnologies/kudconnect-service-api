@@ -1,0 +1,149 @@
+openapi: 3.0.3
+info:
+  version: versionNumber
+  title: Online Recruiting Tool
+  description:  Online Recruiting Tool
+  contact:
+    name: API Support
+    email: contact@kudostech.com
+servers:
+  - url: https://api-url.com/v1
+
+paths:
+  /candidates:
+    get:
+      summary: Lists all candidates
+      operationId: listCandidates
+      tags:
+        - Candidates
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                description: Candidates results list
+                type: array
+                items:
+                  $ref: '#/components/schemas/Candidate'
+    post:
+      summary: Creates a new candidate
+      operationId: createCandidate
+      tags:
+        - Candidates
+      requestBody:
+        description: Candidate object that needs to be added
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Candidate'
+        required: true
+      responses:
+        '201':
+          description: Candidate created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceUUID'
+  /candidates/{candidateId}:
+    get:
+      summary: Find candidate by ID
+      operationId: getCandidateById
+      tags:
+        - Candidates
+      parameters:
+        - name: candidateId
+          in: path
+          description: ID of candidate to return
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candidate'
+        '404':
+          description: Candidate not found
+    put:
+      summary: Updates a candidate with a new data
+      operationId: updateCandidate
+      tags:
+        - Candidates
+      parameters:
+        - name: candidateId
+          in: path
+          description: ID of candidate that need to be updated
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Updated user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Candidate'
+        required: true
+      responses:
+        '200':
+          description: Candidate updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candidate'
+        '404':
+          description: Candidate not found
+    delete:
+      summary: Deletes a candidate
+      operationId: deleteCandidate
+      tags:
+        - Candidates
+      parameters:
+        - name: candidateId
+          in: path
+          description: ID of the candidate to delete
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Candidate deleted
+        '404':
+          description: Candidate not found
+components:
+  schemas:
+    Candidate:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        status:
+          type: string
+          description: The status of the candidate (e.g., 'new', 'interview', 'hired')
+        appliedPosition:
+          type: string
+          description: The position the candidate applied for
+    ResourceUUID:
+      type: object
+      description: The UUID of the resource
+      properties:
+        id:
+          type: string
+          description: The UUID of the resource
+          example: 1a7588a5-a684-4cd7-8f98-11e660af2289
+          format: uuid
+

@@ -1,13 +1,13 @@
-package ro.kudostech.hypercareers;
+package ro.kudostech.kudconnect;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class HypercareersApplication {
+public class KudconnectApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(HypercareersApplication.class, args);
+		SpringApplication.run(KudconnectApplication.class, args);
 	}
 
 }
