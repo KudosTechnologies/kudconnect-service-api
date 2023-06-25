@@ -1,4 +1,4 @@
-package ro.kudostech.kudconnect;
+package ro.kudostech.kudconnect.step;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;

@@ -13,10 +13,8 @@ plugins {
     id 'org.springframework.boot' version '3.1.0'
     id 'io.spring.dependency-management' version '1.1.0'
     id 'java'
-    id 'idea'
     id 'jacoco'
 }
-apply plugin: "org.openapi.generator"
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:2022.0.3"
@@ -49,8 +47,6 @@ java {
     }
 }
 
-def openApiDef = "$buildDir/dependencies/apiDef"
-def openApiTemplateDir = "$buildDir/generated/openapi/templates".toString()
 def openApiClientDir = "$buildDir/generated/openapi/client".toString()
 def openApiServerDir = "$buildDir/generated/openapi/server".toString()
 sourceSets {
@@ -71,16 +67,6 @@ sourceSets {
     }
 }
 
-idea {
-    project {
-        jdkName = "$javaVersion"
-        languageLevel = "$javaVersion"
-    }
-    module {
-        testSourceDirs += project.sourceSets.acceptance.java.srcDirs
-        testSourceDirs += project.sourceSets.acceptance.resources.srcDirs
-    }
-}
 dependencies {
     apiDef "ro.kudostech:kudconnect-service-api:$KudConnectApiVersion@yaml"
     implementation 'org.springframework.modulith:spring-modulith-bom:1.0.0-SNAPSHOT'
@@ -134,10 +120,10 @@ test {
     description = "Runs all unit tests definied via JUnit."
     group = "testing"
 }
-tasks.withType(Test) {
+tasks.withType(Test).configureEach {
     testLogging.showStandardStreams = true
 }
-task acceptanceTest(type: Test) {
+tasks.register('acceptanceTest', Test) {
     description = "Runs the acceptance tests defined via Cucumber"
     group = "testing"
     testClassesDirs = sourceSets.acceptance.output.classesDirs
@@ -149,7 +135,7 @@ acceptanceTest.mustRunAfter(test)
 jacoco {
     toolVersion = "0.8.10"
 }
-tasks.withType(JacocoReport) {
+tasks.withType(JacocoReport).configureEach {
     reports {
         xml.required = true
         html.required = true
@@ -165,7 +151,7 @@ jacocoTestReport {
     }
 }
 test.finalizedBy jacocoTestReport
-task jacocoAcceptanceTestReport(type: JacocoReport) {
+tasks.register('jacocoAcceptanceTestReport', JacocoReport) {
     description = "Generates jacoco code coverage report for acceptance test tasks."
     group = "reporting"
     executionData acceptanceTest
@@ -176,7 +162,7 @@ task jacocoAcceptanceTestReport(type: JacocoReport) {
     }
 }
 acceptanceTest.finalizedBy jacocoAcceptanceTestReport
-task allTestReport(type: JacocoReport) {
+tasks.register('allTestReport', JacocoReport) {
     description = "Generates jacoco code coverage report for unit, integration und acceptance test tasks."
     group = "reporting"
     executionData test, acceptanceTest
@@ -186,7 +172,7 @@ task allTestReport(type: JacocoReport) {
         html.required = true
     }
 }
-task copyRuntimeLibs(type: Copy) {
+tasks.register('copyRuntimeLibs', Copy) {
     into "libs"
     from configurations.runtimeClasspath
     doLast {
@@ -209,28 +195,7 @@ tasks.register('copyOpenApiDef', Copy) {
     includeEmptyDirs = false
     into "$projectDir/spec/external/"
 }
-tasks.register('patchOpenApiTemplates') {
-    group 'openapi tools'
-    copy {
-        from buildscript.configurations.classpath
-        include "openapi-generator-${openApiGeneratorVersion}.jar"
-        into openApiTemplateDir
-    }
-    copy {
-        from(zipTree("$openApiTemplateDir/openapi-generator-${openApiGeneratorVersion}.jar")) {
-            include "Java/*Enum.mustache"
-            include "JavaSpring/enum*.mustache"
-            include "JavaSpring/api.mustache"
-        }
-        into openApiTemplateDir
-        filter {
-            it
-            // solve Jackson's issue with deserializing enums: https://github.com/FasterXML/jackson-module-kotlin/issues/336
-                    .replace('@JsonCreator', '@JsonCreator(mode = JsonCreator.Mode.DELEGATING)')
-        }
-    }
-}
-task buildJavaClient(type: GenerateTask) {
+tasks.register('buildJavaClient', GenerateTask) {
     group 'openapi tools'
     generatorName = "java"
     inputSpec = "$projectDir/spec/external/kudconnect-service-api.yaml".toString()
@@ -238,7 +203,6 @@ task buildJavaClient(type: GenerateTask) {
     apiPackage = 'ro.kudostech.kudconnect.api.client'
     modelPackage = 'ro.kudostech.kudconnect.api.client.model'
     modelNameSuffix = 'Dto'
-    templateDir = "${openApiTemplateDir}/Java"
     configOptions = [
             artifactDescription    : "generated organizationApi",
             artifactId             : "organizationApi",
@@ -252,10 +216,9 @@ task buildJavaClient(type: GenerateTask) {
     ]
 }
 buildJavaClient.dependsOn copyOpenApiDef
-buildJavaClient.dependsOn patchOpenApiTemplates
 compileAcceptanceJava.dependsOn buildJavaClient
 
-task buildJavaServer(type: GenerateTask) {
+tasks.register('buildJavaServer', GenerateTask) {
     group 'openapi tools'
     generatorName = "spring"
     inputSpec = "$projectDir/spec/external/kudconnect-service-api.yaml".toString()
@@ -291,6 +254,5 @@ task buildJavaServer(type: GenerateTask) {
 
 }
 buildJavaServer.dependsOn copyOpenApiDef
-buildJavaServer.dependsOn patchOpenApiTemplates
 compileJava.dependsOn buildJavaServer
 
