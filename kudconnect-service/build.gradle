@@ -172,19 +172,6 @@ tasks.register('allTestReport', JacocoReport) {
         html.required = true
     }
 }
-tasks.register('copyRuntimeLibs', Copy) {
-    into "libs"
-    from configurations.runtimeClasspath
-    doLast {
-        def files = fileTree("libs").filter { it.isFile() }.files.name
-        files.each { def file ->
-            exec {
-                workingDir "libs"
-                commandLine 'touch', '-a', '-m', '--date=@0', file
-            }
-        }
-    }
-}
 tasks.register('copyOpenApiDef', Copy) {
     dependsOn configurations.apiDef
     delete "spec/external/"
