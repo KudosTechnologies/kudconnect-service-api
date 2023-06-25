@@ -5,9 +5,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ro.kudostech.kudconnect.api.CandidatesApi;
-import ro.kudostech.kudconnect.api.model.CandidateDto;
-import ro.kudostech.kudconnect.api.model.ResourceUUIDDto;
+
+import ro.kudostech.kudconnect.api.server.CandidatesApi;
+import ro.kudostech.kudconnect.api.server.model.CandidateDto;
+import ro.kudostech.kudconnect.api.server.model.ResourceUUIDDto;
 import ro.kudostech.kudconnect.service.CandidatesService;
 
 import java.net.URI;

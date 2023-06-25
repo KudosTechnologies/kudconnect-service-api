@@ -1,22 +1,43 @@
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:1.1.2'
+        classpath "org.openapitools:openapi-generator-gradle-plugin:$openApiGeneratorVersion"
+    }
+}
 plugins {
-    //TODO: Add versions as variables in gradle.properties
-    id 'java'
     id 'org.springframework.boot' version '3.1.0'
     id 'io.spring.dependency-management' version '1.1.0'
-    id 'org.openapi.generator' version '6.6.0'
+    id 'java'
+    id 'jacoco'
 }
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2022.0.3"
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    acceptanceImplementation {
+        extendsFrom testImplementation
+    }
+    apiDef {
+        transitive = false
+    }
+}
+
 
 repositories {
     mavenLocal()
     maven { url "https://repo.spring.io/snapshot" }
     mavenCentral()
-}
-
-configurations {
-    openapi
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
 }
 
 java {
@@ -26,14 +47,28 @@ java {
     }
 }
 
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+def openApiClientDir = "$buildDir/generated/openapi/client".toString()
+def openApiServerDir = "$buildDir/generated/openapi/server".toString()
+sourceSets {
+    main {
+        java.srcDir "src/main/java"
+        java.srcDir "${openApiServerDir}/src/main/java"
+        resources.srcDir "src/main/resources"
+    }
+    test {
+        java.srcDir "src/test/java"
+        resources.srcDir "src/test/resources"
+    }
+    acceptance {
+        java.srcDir 'src/acceptance/java'
+        java.srcDir "${openApiClientDir}/src/java"
+        compileClasspath += sourceSets.main.output + configurations.testCompileClasspath + configurations.compileClasspath
+        runtimeClasspath += output + compileClasspath
     }
 }
 
 dependencies {
-    openapi "ro.kudostech:kudconnect-service-api:$KudConnectApiVersion@yaml"
+    apiDef "ro.kudostech:kudconnect-service-api:$KudConnectApiVersion@yaml"
     implementation 'org.springframework.modulith:spring-modulith-bom:1.0.0-SNAPSHOT'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -47,38 +82,139 @@ dependencies {
 
     runtimeOnly 'org.postgresql:postgresql'
 
+    // Test
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
+    testImplementation(platform("org.junit:junit-bom:5.9.3"))
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine'
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+    testImplementation 'com.h2database:h2:2.1.214'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.modulith:spring-modulith-starter-test:1.0.0-SNAPSHOT'
+    // Acceptance tests
+    acceptanceImplementation('org.springframework.boot:spring-boot-starter-test')
+    acceptanceImplementation 'io.rest-assured:rest-assured'
+    acceptanceImplementation 'io.cucumber:cucumber-java:7.12.1'
+    acceptanceImplementation 'io.cucumber:cucumber-junit:7.12.1'
+    acceptanceImplementation 'io.cucumber:cucumber-spring:7.12.1'
+    acceptanceImplementation 'org.awaitility:awaitility:4.2.0'
+    acceptanceImplementation 'com.auth0:java-jwt:4.4.0'
+    acceptanceImplementation group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.2'
+    acceptanceImplementation 'javax.validation:validation-api:2.0.1.Final'
+    acceptanceImplementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
+    acceptanceImplementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.2.1'
 }
-
-
-// OpenAPI configuration
-def openApiServerDir = "$buildDir/generated/openapi/server".toString()
-tasks.register('copyOpenApiSpecs', Copy) {
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+processTestResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+processAcceptanceResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+tasks.named("sourcesJar") { duplicatesStrategy = 'include' }
+test {
+    useJUnitPlatform()
+    description = "Runs all unit tests definied via JUnit."
+    group = "testing"
+}
+tasks.withType(Test).configureEach {
+    testLogging.showStandardStreams = true
+}
+tasks.register('acceptanceTest', Test) {
+    description = "Runs the acceptance tests defined via Cucumber"
+    group = "testing"
+    testClassesDirs = sourceSets.acceptance.output.classesDirs
+    classpath = sourceSets.acceptance.runtimeClasspath
+    finalizedBy "jacocoAcceptanceTestReport"
+}
+build.dependsOn(acceptanceTest)
+acceptanceTest.mustRunAfter(test)
+jacoco {
+    toolVersion = "0.8.10"
+}
+tasks.withType(JacocoReport).configureEach {
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+jacocoTestReport {
+    description = "Generates jacoco code coverage report for unit test tasks."
+    group = "reporting"
+    executionData test
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+test.finalizedBy jacocoTestReport
+tasks.register('jacocoAcceptanceTestReport', JacocoReport) {
+    description = "Generates jacoco code coverage report for acceptance test tasks."
+    group = "reporting"
+    executionData acceptanceTest
+    sourceSets sourceSets.main
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+acceptanceTest.finalizedBy jacocoAcceptanceTestReport
+tasks.register('allTestReport', JacocoReport) {
+    description = "Generates jacoco code coverage report for unit, integration und acceptance test tasks."
+    group = "reporting"
+    executionData test, acceptanceTest
+    sourceSets sourceSets.main
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+tasks.register('copyOpenApiDef', Copy) {
+    dependsOn configurations.apiDef
     delete "spec/external/"
-
-    dependsOn configurations.openapi
-    from configurations.openapi.singleFile.absolutePath
+    from configurations.apiDef.singleFile.absolutePath
 
     include "**/*.yaml", "**/*.yml"
     rename("kudconnect-service-api-" + project.property("KudConnectApiVersion") + ".yaml", "kudconnect-service-api.yaml")
     includeEmptyDirs = false
     into "$projectDir/spec/external/"
 }
+tasks.register('buildJavaClient', GenerateTask) {
+    group 'openapi tools'
+    generatorName = "java"
+    inputSpec = "$projectDir/spec/external/kudconnect-service-api.yaml".toString()
+    outputDir = openApiClientDir
+    apiPackage = 'ro.kudostech.kudconnect.api.client'
+    modelPackage = 'ro.kudostech.kudconnect.api.client.model'
+    modelNameSuffix = 'Dto'
+    configOptions = [
+            artifactDescription    : "generated organizationApi",
+            artifactId             : "organizationApi",
+            artifactUrl            : "https://bitbucket.interhyp.de/bitbucket/projects/BACKEND/repos/organization-api/",
+            hideGenerationTimestamp: "true",
+            library                : "resttemplate",
+            openApiNullable        : "false",
+            serializableModel      : "true",
+            sourceFolder           : "src/java",
+            useBeanValidation      : "true",
+    ]
+}
+buildJavaClient.dependsOn copyOpenApiDef
+compileAcceptanceJava.dependsOn buildJavaClient
 
-openApiGenerate {
+tasks.register('buildJavaServer', GenerateTask) {
+    group 'openapi tools'
     generatorName = "spring"
     inputSpec = "$projectDir/spec/external/kudconnect-service-api.yaml".toString()
     outputDir = openApiServerDir
-
-    apiPackage = 'ro.kudostech.kudconnect.api'
-    modelPackage = 'ro.kudostech.kudconnect.api.model'
+    apiPackage = 'ro.kudostech.kudconnect.api.server'
+    modelPackage = 'ro.kudostech.kudconnect.api.server.model'
     modelNameSuffix = 'Dto'
+
     configOptions = [
-            artifactId                    : project.baseName,
             dateLibrary                   : "java8",
             delegatePattern               : "false",
             enumPropertyNaming            : "UPPERCASE",
@@ -88,7 +224,8 @@ openApiGenerate {
             hideGenerationTimestamp       : "true",
             interfaceOnly                 : "true",
             interfacePrefix               : "false",
-            library                       : "spring-cloud",
+//            library                       : "spring-cloud",
+            library                       : "spring-boot",
             openApiNullable               : "false",
             removeEnumValuePrefix         : "false",
             removeOperationIdPrefix       : "true",
@@ -101,30 +238,8 @@ openApiGenerate {
             additionalModelTypeAnnotations: "@lombok.Generated",
             additionalEnumTypeAnnotations : "@lombok.Generated",
     ]
-}
 
-tasks.compileJava.dependsOn tasks.openApiGenerate
-tasks.sourcesJar.dependsOn tasks.openApiGenerate
-tasks.openApiGenerate.dependsOn tasks.copyOpenApiSpecs
-
-// Set Strategy to permit considering generated classes
-sourceSets {
-    main {
-        java.srcDir "src/main/java"
-        java.srcDir "${openApiServerDir}/src/main/java"
-        resources.srcDir "src/main/resources"
-    }
-    test {
-        java.srcDir "src/test/java"
-        resources.srcDir "src/test/resources"
-    }
 }
+buildJavaServer.dependsOn copyOpenApiDef
+compileJava.dependsOn buildJavaServer
 
-processResources {
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-}
-tasks.named("sourcesJar") { duplicatesStrategy = 'include' }
-
-tasks.named('test') {
-    useJUnitPlatform()
-}
