@@ -8,5 +8,5 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("acceptancetest")
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    classes = KudconnectApplication.class)
+    classes = Application.class)
 public class AcceptanceTestConfiguration {}

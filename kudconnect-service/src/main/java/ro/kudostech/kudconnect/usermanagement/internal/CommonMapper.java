@@ -1,4 +1,4 @@
-package ro.kudostech.kudconnect.service;
+package ro.kudostech.kudconnect.usermanagement.internal;
 
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;

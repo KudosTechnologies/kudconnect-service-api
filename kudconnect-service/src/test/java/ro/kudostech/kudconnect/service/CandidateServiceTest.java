@@ -5,9 +5,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ro.kudostech.kudconnect.api.server.model.CandidateDto;
-import ro.kudostech.kudconnect.domain.Candidate;
-import ro.kudostech.kudconnect.repository.CandidateRepository;
+import ro.kudostech.kudconnect.apiserver.CandidateDto;
+import ro.kudostech.kudconnect.usermanagement.CandidatesService;
+import ro.kudostech.kudconnect.usermanagement.internal.CandidateMapper;
+import ro.kudostech.kudconnect.usermanagement.internal.domain.Candidate;
+import ro.kudostech.kudconnect.usermanagement.internal.repository.CandidateRepository;
 
 import java.util.Arrays;
 import java.util.List;

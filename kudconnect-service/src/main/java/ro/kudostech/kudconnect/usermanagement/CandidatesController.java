@@ -1,15 +1,14 @@
-package ro.kudostech.kudconnect.web;
+package ro.kudostech.kudconnect.usermanagement;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ro.kudostech.kudconnect.apiserver.CandidateDto;
+import ro.kudostech.kudconnect.apiserver.CandidatesApi;
+import ro.kudostech.kudconnect.apiserver.ResourceUUIDDto;
 
-import ro.kudostech.kudconnect.api.server.CandidatesApi;
-import ro.kudostech.kudconnect.api.server.model.CandidateDto;
-import ro.kudostech.kudconnect.api.server.model.ResourceUUIDDto;
-import ro.kudostech.kudconnect.service.CandidatesService;
 
 import java.net.URI;
 import java.util.List;
