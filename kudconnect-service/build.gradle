@@ -71,6 +71,7 @@ sourceSets {
 
 dependencies {
     apiDef "ro.kudostech:kudconnect-service-api:$KudConnectApiVersion@yaml"
+    implementation 'org.springframework.modulith:spring-modulith-api'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -189,8 +190,8 @@ tasks.register('buildJavaClient', GenerateTask) {
     generatorName = "java"
     inputSpec = "$projectDir/spec/external/kudconnect-service-api.yaml".toString()
     outputDir = openApiClientDir
-    apiPackage = 'ro.kudostech.kudconnect.apiclient'
-    modelPackage = 'ro.kudostech.kudconnect.apiclient'
+    apiPackage = 'ro.kudostech.kudconnect.api.client'
+    modelPackage = 'ro.kudostech.kudconnect.api.client'
     modelNameSuffix = 'Dto'
     configOptions = [
             artifactDescription    : "generated organizationApi",
@@ -212,8 +213,8 @@ tasks.register('buildJavaServer', GenerateTask) {
     generatorName = "spring"
     inputSpec = "$projectDir/spec/external/kudconnect-service-api.yaml".toString()
     outputDir = openApiServerDir
-    apiPackage = 'ro.kudostech.kudconnect.apiserver'
-    modelPackage = 'ro.kudostech.kudconnect.apiserver'
+    apiPackage = 'ro.kudostech.kudconnect.api.server'
+    modelPackage = 'ro.kudostech.kudconnect.api.server.model'
     modelNameSuffix = 'Dto'
 
     configOptions = [
@@ -242,6 +243,36 @@ tasks.register('buildJavaServer', GenerateTask) {
     ]
 
 }
+
+tasks.register('openapiPackageInfoConfig') {
+    // Create package-info files for server package
+    def serverPackagePath = "${openApiServerDir}/src/main/java/ro/kudostech/kudconnect/api/server"
+    def serverPackageInfo = """
+    @org.springframework.modulith.NamedInterface("apiserver")
+    package ro.kudostech.kudconnect.api.server;
+    """
+    File extraFolder = new File( "${serverPackagePath}")
+    if( !extraFolder.exists() ) {
+        extraFolder.mkdirs()
+    }
+    new File("${serverPackagePath}/package-info.java").text = serverPackageInfo
+
+    // Create package-info files for server model package
+    def modelPackagePath = "${openApiServerDir}/src/main/java/ro/kudostech/kudconnect/api/server/model"
+    def modelPackageInfo = """
+    @org.springframework.modulith.NamedInterface("apiservermodel")
+    package ro.kudostech.kudconnect.api.server.model;
+    """
+    extraFolder = new File( "${modelPackagePath}")
+    if( !extraFolder.exists() ) {
+        extraFolder.mkdirs()
+    }
+    new File("${modelPackagePath}/package-info.java").text = modelPackageInfo
+}
 buildJavaServer.dependsOn copyOpenApiDef
 compileJava.dependsOn buildJavaServer
+openapiPackageInfoConfig.dependsOn buildJavaServer
+
+
+
 

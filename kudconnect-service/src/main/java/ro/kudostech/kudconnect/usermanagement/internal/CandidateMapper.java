@@ -3,7 +3,7 @@ package ro.kudostech.kudconnect.usermanagement.internal;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ro.kudostech.kudconnect.apiserver.CandidateDto;
+import ro.kudostech.kudconnect.api.server.model.CandidateDto;
 import ro.kudostech.kudconnect.usermanagement.internal.domain.Candidate;
 
 @Mapper(

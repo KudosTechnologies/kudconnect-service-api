@@ -1,17 +1,17 @@
-package ro.kudostech.kudconnect.usermanagement;
+package ro.kudostech.kudconnect.usermanagement.internal;
 
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ro.kudostech.kudconnect.apiserver.CandidateDto;
-import ro.kudostech.kudconnect.usermanagement.internal.CandidateMapper;
+import ro.kudostech.kudconnect.api.server.model.CandidateDto;
+import ro.kudostech.kudconnect.usermanagement.CandidateService;
 import ro.kudostech.kudconnect.usermanagement.internal.domain.Candidate;
 import ro.kudostech.kudconnect.usermanagement.internal.repository.CandidateRepository;
 
 @Service
 @RequiredArgsConstructor
-public class CandidatesService {
+public class CandidatesServiceImpl implements CandidateService {
 
   private final CandidateRepository candidateRepository;
   private final CandidateMapper candidateMapper;

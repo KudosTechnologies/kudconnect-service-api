@@ -1,12 +1,13 @@
 package ro.kudostech.kudconnect.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ro.kudostech.kudconnect.apiserver.CandidateDto;
-import ro.kudostech.kudconnect.usermanagement.CandidatesService;
+import ro.kudostech.kudconnect.api.server.model.CandidateDto;
+import ro.kudostech.kudconnect.usermanagement.CandidateService;
+import ro.kudostech.kudconnect.usermanagement.internal.CandidatesServiceImpl;
 import ro.kudostech.kudconnect.usermanagement.internal.CandidateMapper;
 import ro.kudostech.kudconnect.usermanagement.internal.domain.Candidate;
 import ro.kudostech.kudconnect.usermanagement.internal.repository.CandidateRepository;
@@ -31,8 +32,12 @@ class CandidateServiceTest {
     @Mock
     private CandidateMapper candidateMapper;
 
-    @InjectMocks
-    private CandidatesService candidatesService;
+    private CandidateService cut;
+
+    @BeforeEach
+    void setUp() {
+        cut = new CandidatesServiceImpl(candidateRepository, candidateMapper);
+    }
 
     @Test
     void getCandidateByIdTest() {
@@ -45,7 +50,7 @@ class CandidateServiceTest {
         when(candidateMapper.toCandidateDto(candidate)).thenReturn(candidateDto);
 
         // Act
-        CandidateDto result = candidatesService.getCandidateById(userId);
+        CandidateDto result = cut.getCandidateById(userId);
 
         // Assert
         assertEquals(candidateDto, result);
@@ -66,7 +71,7 @@ class CandidateServiceTest {
         when(candidateMapper.toCandidateDto(candidate2)).thenReturn(candidateDto2);
 
         // Act
-        List<CandidateDto> result = candidatesService.getAllCandidates();
+        List<CandidateDto> result = cut.getAllCandidates();
 
         // Assert
         assertEquals(2, result.size());
@@ -87,7 +92,7 @@ class CandidateServiceTest {
         when(candidateMapper.toCandidateDto(candidate)).thenReturn(candidateDto);
 
         // Act
-        CandidateDto result = candidatesService.createCandidate(candidateDto);
+        CandidateDto result = cut.createCandidate(candidateDto);
 
         // Assert
         assertEquals(candidateDto, result);
@@ -104,7 +109,7 @@ class CandidateServiceTest {
         doNothing().when(candidateRepository).deleteById(userId);
 
         // Act
-        candidatesService.deleteCandidate(userId);
+        cut.deleteCandidate(userId);
 
         // Assert
         verify(candidateRepository, times(1)).deleteById(userId);

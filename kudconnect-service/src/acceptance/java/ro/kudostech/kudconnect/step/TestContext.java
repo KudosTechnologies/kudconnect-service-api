@@ -5,8 +5,8 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import ro.kudostech.kudconnect.ApiClient;
-import ro.kudostech.kudconnect.apiclient.CandidatesApi;
+import ro.kudostech.kudconnect.api.ApiClient;
+import ro.kudostech.kudconnect.api.client.CandidatesApi;
 
 @Component
 public class TestContext {
