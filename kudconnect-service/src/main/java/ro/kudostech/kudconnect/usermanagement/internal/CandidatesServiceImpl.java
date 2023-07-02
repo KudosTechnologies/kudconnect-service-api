@@ -3,9 +3,10 @@ package ro.kudostech.kudconnect.usermanagement.internal;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import ro.kudostech.kudconnect.api.server.model.CandidateDto;
-import ro.kudostech.kudconnect.notification.NotificationService;
+import ro.kudostech.kudconnect.usermanagement.CandidateCdc;
 import ro.kudostech.kudconnect.usermanagement.CandidateService;
 import ro.kudostech.kudconnect.usermanagement.internal.domain.Candidate;
 import ro.kudostech.kudconnect.usermanagement.internal.repository.CandidateRepository;
@@ -16,7 +17,8 @@ public class CandidatesServiceImpl implements CandidateService {
 
   private final CandidateRepository candidateRepository;
   private final CandidateMapper candidateMapper;
-  private final NotificationService notificationService;
+  private final ApplicationEventPublisher events;
+
 
   public CandidateDto getCandidateById(String userId) {
     return candidateRepository
@@ -32,7 +34,11 @@ public class CandidatesServiceImpl implements CandidateService {
   public CandidateDto createCandidate(CandidateDto candidateDto) {
     Candidate candidate = candidateMapper.toCandidate(candidateDto);
     candidateRepository.save(candidate);
-    notificationService.sendNotification("Candidate with email" + candidate.getEmail() + " created");
+    CandidateCdc candidateCdc = CandidateCdc.builder()
+            .id(candidate.getId())
+            .email(candidate.getEmail())
+            .build();
+    events.publishEvent(candidateCdc);
     return candidateMapper.toCandidateDto(candidate);
   }
 

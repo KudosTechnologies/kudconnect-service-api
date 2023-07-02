@@ -16,8 +16,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import ro.kudostech.kudconnect.api.server.model.CandidateDto;
-import ro.kudostech.kudconnect.notification.NotificationService;
 import ro.kudostech.kudconnect.usermanagement.internal.CandidateMapper;
 import ro.kudostech.kudconnect.usermanagement.internal.CandidatesServiceImpl;
 import ro.kudostech.kudconnect.usermanagement.internal.domain.Candidate;
@@ -27,7 +27,7 @@ import ro.kudostech.kudconnect.usermanagement.internal.repository.CandidateRepos
 class CandidateServiceTest {
   @Mock private CandidateRepository candidateRepository;
   @Mock private CandidateMapper candidateMapper;
-  @Mock private NotificationService notificationService;
+  @Mock private ApplicationEventPublisher applicationEventPublisher;
 
   @InjectMocks
   private CandidatesServiceImpl cut;

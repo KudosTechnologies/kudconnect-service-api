@@ -71,16 +71,12 @@ sourceSets {
 
 dependencies {
     apiDef "ro.kudostech:kudconnect-service-api:$KudConnectApiVersion@yaml"
-    implementation 'org.springframework.modulith:spring-modulith-api'
-    implementation 'org.springframework.modulith:spring-modulith-starter-core'
-    implementation 'org.springframework.modulith:spring-modulith-actuator'
-    implementation 'org.springframework.modulith:spring-modulith-observability'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-
-    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+    implementation 'org.springframework.modulith:spring-modulith-starter-core'
+    implementation 'org.springframework.modulith:spring-modulith-starter-jpa'
+    runtimeOnly 'org.springframework.boot:spring-boot-starter-actuator'
 
     implementation group: 'io.swagger.core.v3', name: 'swagger-annotations', version: '2.2.12'
     compileOnly 'org.projectlombok:lombok'
@@ -99,10 +95,10 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     testRuntimeOnly 'org.junit.vintage:junit-vintage-engine'
     testImplementation('org.springframework.boot:spring-boot-starter-test')
-    testImplementation 'com.h2database:h2:2.1.214'
 
     // Acceptance tests
     acceptanceImplementation('org.springframework.boot:spring-boot-starter-test')
+    acceptanceImplementation 'com.h2database:h2:2.1.214'
     acceptanceImplementation 'io.rest-assured:rest-assured'
     acceptanceImplementation 'io.cucumber:cucumber-java:7.12.1'
     acceptanceImplementation 'io.cucumber:cucumber-junit:7.12.1'
