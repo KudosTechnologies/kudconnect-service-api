@@ -71,16 +71,10 @@ sourceSets {
 
 dependencies {
     apiDef "ro.kudostech:kudconnect-service-api:$KudConnectApiVersion@yaml"
-    implementation 'org.springframework.modulith:spring-modulith-api'
-    implementation 'org.springframework.modulith:spring-modulith-starter-core'
-    implementation 'org.springframework.modulith:spring-modulith-actuator'
-    implementation 'org.springframework.modulith:spring-modulith-observability'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-
-    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
 
     implementation group: 'io.swagger.core.v3', name: 'swagger-annotations', version: '2.2.12'
     compileOnly 'org.projectlombok:lombok'
@@ -91,7 +85,6 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
 
     // Test
-    testImplementation 'org.springframework.modulith:spring-modulith-starter-test'
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
     testImplementation(platform("org.junit:junit-bom:5.9.3"))
@@ -100,6 +93,10 @@ dependencies {
     testRuntimeOnly 'org.junit.vintage:junit-vintage-engine'
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     testImplementation 'com.h2database:h2:2.1.214'
+    testImplementation group: 'com.tngtech.archunit', name: 'archunit-junit5', version: '1.0.1'
+    testImplementation group: 'org.reflections', name: 'reflections', version: '0.10.2'
+
+
 
     // Acceptance tests
     acceptanceImplementation('org.springframework.boot:spring-boot-starter-test')
@@ -250,34 +247,8 @@ tasks.register('buildJavaServer', GenerateTask) {
 
 }
 
-tasks.register('openapiPackageInfoConfig') {
-    // Create package-info files for server package
-    def serverPackagePath = "${openApiServerDir}/src/main/java/ro/kudostech/kudconnect/api/server"
-    def serverPackageInfo = """
-    @org.springframework.modulith.NamedInterface("apiserver")
-    package ro.kudostech.kudconnect.api.server;
-    """
-    File extraFolder = new File( "${serverPackagePath}")
-    if( !extraFolder.exists() ) {
-        extraFolder.mkdirs()
-    }
-    new File("${serverPackagePath}/package-info.java").text = serverPackageInfo
-
-    // Create package-info files for server model package
-    def modelPackagePath = "${openApiServerDir}/src/main/java/ro/kudostech/kudconnect/api/server/model"
-    def modelPackageInfo = """
-    @org.springframework.modulith.NamedInterface("apiservermodel")
-    package ro.kudostech.kudconnect.api.server.model;
-    """
-    extraFolder = new File( "${modelPackagePath}")
-    if( !extraFolder.exists() ) {
-        extraFolder.mkdirs()
-    }
-    new File("${modelPackagePath}/package-info.java").text = modelPackageInfo
-}
 buildJavaServer.dependsOn copyOpenApiDef
 compileJava.dependsOn buildJavaServer
-openapiPackageInfoConfig.dependsOn buildJavaServer
 
 
 

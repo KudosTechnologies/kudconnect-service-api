@@ -32,7 +32,6 @@ public class CandidatesServiceImpl implements CandidateService {
   public CandidateDto createCandidate(CandidateDto candidateDto) {
     Candidate candidate = candidateMapper.toCandidate(candidateDto);
     candidateRepository.save(candidate);
-    notificationService.sendNotification("Candidate with email" + candidate.getEmail() + " created");
     return candidateMapper.toCandidateDto(candidate);
   }
 

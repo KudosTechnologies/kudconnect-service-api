@@ -1,4 +1,4 @@
-package ro.kudostech.kudconnect.usermanagement;
+package ro.kudostech.kudconnect.usermanagement.internal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -18,8 +18,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ro.kudostech.kudconnect.api.server.model.CandidateDto;
 import ro.kudostech.kudconnect.notification.NotificationService;
-import ro.kudostech.kudconnect.usermanagement.internal.CandidateMapper;
-import ro.kudostech.kudconnect.usermanagement.internal.CandidatesServiceImpl;
 import ro.kudostech.kudconnect.usermanagement.internal.domain.Candidate;
 import ro.kudostech.kudconnect.usermanagement.internal.repository.CandidateRepository;
 
