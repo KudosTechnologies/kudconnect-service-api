@@ -1,4 +1,4 @@
-package ro.kudostech.kudconnect.service;
+package ro.kudostech.kudconnect.usermanagement;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.modulith.docs.Documenter;

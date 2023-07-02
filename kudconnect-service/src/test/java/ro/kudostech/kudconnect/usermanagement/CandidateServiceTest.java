@@ -1,21 +1,4 @@
-package ro.kudostech.kudconnect.service;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import ro.kudostech.kudconnect.api.server.model.CandidateDto;
-import ro.kudostech.kudconnect.notification.NotificationService;
-import ro.kudostech.kudconnect.usermanagement.CandidateService;
-import ro.kudostech.kudconnect.usermanagement.internal.CandidatesServiceImpl;
-import ro.kudostech.kudconnect.usermanagement.internal.CandidateMapper;
-import ro.kudostech.kudconnect.usermanagement.internal.domain.Candidate;
-import ro.kudostech.kudconnect.usermanagement.internal.repository.CandidateRepository;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+package ro.kudostech.kudconnect.usermanagement;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -25,18 +8,29 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import ro.kudostech.kudconnect.api.server.model.CandidateDto;
+import ro.kudostech.kudconnect.notification.NotificationService;
+import ro.kudostech.kudconnect.usermanagement.internal.CandidateMapper;
+import ro.kudostech.kudconnect.usermanagement.internal.CandidatesServiceImpl;
+import ro.kudostech.kudconnect.usermanagement.internal.domain.Candidate;
+import ro.kudostech.kudconnect.usermanagement.internal.repository.CandidateRepository;
+
 @ExtendWith(MockitoExtension.class)
 class CandidateServiceTest {
   @Mock private CandidateRepository candidateRepository;
   @Mock private CandidateMapper candidateMapper;
   @Mock private NotificationService notificationService;
 
-  private CandidateService cut;
-
-  @BeforeEach
-  void setUp() {
-    cut = new CandidatesServiceImpl(candidateRepository, candidateMapper, notificationService);
-  }
+  @InjectMocks
+  private CandidatesServiceImpl cut;
 
   @Test
   void getCandidateByIdTest() {
