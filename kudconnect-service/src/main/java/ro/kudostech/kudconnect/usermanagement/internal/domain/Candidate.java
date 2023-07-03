@@ -1,4 +1,4 @@
-package ro.kudostech.kudconnect.domain;
+package ro.kudostech.kudconnect.usermanagement.internal.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

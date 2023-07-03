@@ -1,15 +1,14 @@
-package ro.kudostech.kudconnect.web;
+package ro.kudostech.kudconnect.usermanagement;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import ro.kudostech.kudconnect.api.server.CandidatesApi;
 import ro.kudostech.kudconnect.api.server.model.CandidateDto;
 import ro.kudostech.kudconnect.api.server.model.ResourceUUIDDto;
-import ro.kudostech.kudconnect.service.CandidatesService;
+
 
 import java.net.URI;
 import java.util.List;
@@ -18,11 +17,11 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 public class CandidatesController implements CandidatesApi {
-  private final CandidatesService candidatesService;
+  private final CandidateService candidateService;
 
   @Override
   public ResponseEntity<ResourceUUIDDto> createCandidate(CandidateDto candidateDto) {
-    CandidateDto savedCandidate = candidatesService.createCandidate(candidateDto);
+    CandidateDto savedCandidate = candidateService.createCandidate(candidateDto);
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
@@ -33,19 +32,19 @@ public class CandidatesController implements CandidatesApi {
 
   @Override
   public ResponseEntity<Void> deleteCandidate(UUID candidateId) {
-    candidatesService.deleteCandidate(candidateId.toString());
+    candidateService.deleteCandidate(candidateId.toString());
     return ResponseEntity.noContent().build();
   }
 
   @Override
   public ResponseEntity<CandidateDto> getCandidateById(@NonNull UUID candidateId) {
-    CandidateDto candidateDto = candidatesService.getCandidateById(candidateId.toString());
+    CandidateDto candidateDto = candidateService.getCandidateById(candidateId.toString());
     return ResponseEntity.ok(candidateDto);
   }
 
   @Override
   public ResponseEntity<List<CandidateDto>> listCandidates() {
-    return ResponseEntity.ok(candidatesService.getAllCandidates());
+    return ResponseEntity.ok(candidateService.getAllCandidates());
   }
 
   @Override
