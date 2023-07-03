@@ -1,15 +1,16 @@
-package ro.kudostech.kudconnect.usermanagement.internal;
+package ro.kudostech.kudconnect.usermanagement.domain.service;
 
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import ro.kudostech.kudconnect.api.server.model.CandidateDto;
-import ro.kudostech.kudconnect.usermanagement.CandidateCdc;
-import ro.kudostech.kudconnect.usermanagement.CandidateService;
-import ro.kudostech.kudconnect.usermanagement.internal.domain.Candidate;
-import ro.kudostech.kudconnect.usermanagement.internal.repository.CandidateRepository;
+import ro.kudostech.kudconnect.common.event.CandidateCdc;
+import ro.kudostech.kudconnect.usermanagement.domain.mapper.CandidateMapper;
+import ro.kudostech.kudconnect.usermanagement.infrastructure.adapters.output.persistence.CandidateRepository;
+import ro.kudostech.kudconnect.usermanagement.ports.input.CandidateService;
+import ro.kudostech.kudconnect.usermanagement.domain.model.Candidate;
+import ro.kudostech.kudconnect.usermanagement.ports.output.eventpublisher.CandidateEventPublisher;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +18,7 @@ public class CandidatesServiceImpl implements CandidateService {
 
   private final CandidateRepository candidateRepository;
   private final CandidateMapper candidateMapper;
-  private final ApplicationEventPublisher events;
+  private final CandidateEventPublisher eventPublisher;
 
 
   public CandidateDto getCandidateById(String userId) {
@@ -38,7 +39,7 @@ public class CandidatesServiceImpl implements CandidateService {
             .id(candidate.getId())
             .email(candidate.getEmail())
             .build();
-    events.publishEvent(candidateCdc);
+    eventPublisher.publishCandidateCDCEvent(candidateCdc);
     return candidateMapper.toCandidateDto(candidate);
   }
 

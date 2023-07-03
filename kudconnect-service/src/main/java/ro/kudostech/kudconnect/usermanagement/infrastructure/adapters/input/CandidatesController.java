@@ -1,4 +1,4 @@
-package ro.kudostech.kudconnect.usermanagement;
+package ro.kudostech.kudconnect.usermanagement.infrastructure.adapters.input;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +8,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ro.kudostech.kudconnect.api.server.CandidatesApi;
 import ro.kudostech.kudconnect.api.server.model.CandidateDto;
 import ro.kudostech.kudconnect.api.server.model.ResourceUUIDDto;
+import ro.kudostech.kudconnect.usermanagement.ports.input.CandidateService;
 
 
 import java.net.URI;
