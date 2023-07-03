@@ -5,11 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.modulith.test.ApplicationModuleTest;
 import ro.kudostech.kudconnect.api.server.model.CandidateDto;
-import ro.kudostech.kudconnect.notification.NotificationService;
-import ro.kudostech.kudconnect.usermanagement.internal.CandidateMapper;
-import ro.kudostech.kudconnect.usermanagement.internal.CandidatesServiceImpl;
-import ro.kudostech.kudconnect.usermanagement.internal.domain.Candidate;
-import ro.kudostech.kudconnect.usermanagement.internal.repository.CandidateRepository;
+import ro.kudostech.kudconnect.notification.ports.input.NotificationService;
+import ro.kudostech.kudconnect.usermanagement.domain.mapper.CandidateMapper;
+import ro.kudostech.kudconnect.usermanagement.domain.service.CandidatesServiceImpl;
+import ro.kudostech.kudconnect.usermanagement.domain.model.Candidate;
+import ro.kudostech.kudconnect.usermanagement.infrastructure.adapters.output.persistence.CandidateRepository;
 
 import java.util.Optional;
 
@@ -18,34 +18,34 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+/**
+ * This class is an example of how to use @ApplicationModuleTest annotation that comes with spring-modulith.
+ * ref link: https://docs.spring.io/spring-modulith/docs/current/reference/html/#testing
+ */
 @ApplicationModuleTest
-public class CandidateServiceIntTest {
+class CandidateServiceIntTest {
 
-    @MockBean
-    private CandidateRepository candidateRepository;
-    @MockBean private CandidateMapper candidateMapper;
-    @MockBean private NotificationService notificationService;
+  @MockBean private CandidateRepository candidateRepository;
+  @MockBean private CandidateMapper candidateMapper;
 
-    @Autowired
-    private CandidatesServiceImpl cut;
+  @Autowired private CandidatesServiceImpl cut;
 
-    @Test
-    void getCandidateByIdTest() {
-        // Arrange
-        String userId = "1";
-        Candidate candidate = new Candidate();
-        CandidateDto candidateDto = new CandidateDto();
+  @Test
+  void getCandidateByIdTest() {
+    // Arrange
+    String userId = "1";
+    Candidate candidate = new Candidate();
+    CandidateDto candidateDto = new CandidateDto();
 
-        when(candidateRepository.findById(userId)).thenReturn(Optional.of(candidate));
-        when(candidateMapper.toCandidateDto(candidate)).thenReturn(candidateDto);
+    when(candidateRepository.findById(userId)).thenReturn(Optional.of(candidate));
+    when(candidateMapper.toCandidateDto(candidate)).thenReturn(candidateDto);
 
-        // Act
-        CandidateDto result = cut.getCandidateById(userId);
+    // Act
+    CandidateDto result = cut.getCandidateById(userId);
 
-        // Assert
-        assertEquals(candidateDto, result);
-        verify(candidateRepository, times(1)).findById(userId);
-        verify(candidateMapper, times(1)).toCandidateDto(candidate);
-    }
-
+    // Assert
+    assertEquals(candidateDto, result);
+    verify(candidateRepository, times(1)).findById(userId);
+    verify(candidateMapper, times(1)).toCandidateDto(candidate);
+  }
 }

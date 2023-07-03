@@ -1,4 +1,4 @@
-package ro.kudostech.kudconnect.usermanagement;
+package ro.kudostech.kudconnect.usermanagement.ports.input;
 
 import ro.kudostech.kudconnect.api.server.model.CandidateDto;
 

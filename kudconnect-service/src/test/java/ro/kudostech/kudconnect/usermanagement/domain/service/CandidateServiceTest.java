@@ -1,4 +1,4 @@
-package ro.kudostech.kudconnect.usermanagement;
+package ro.kudostech.kudconnect.usermanagement.domain.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -18,16 +18,17 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 import ro.kudostech.kudconnect.api.server.model.CandidateDto;
-import ro.kudostech.kudconnect.usermanagement.internal.CandidateMapper;
-import ro.kudostech.kudconnect.usermanagement.internal.CandidatesServiceImpl;
-import ro.kudostech.kudconnect.usermanagement.internal.domain.Candidate;
-import ro.kudostech.kudconnect.usermanagement.internal.repository.CandidateRepository;
+import ro.kudostech.kudconnect.usermanagement.domain.mapper.CandidateMapper;
+import ro.kudostech.kudconnect.usermanagement.domain.service.CandidatesServiceImpl;
+import ro.kudostech.kudconnect.usermanagement.domain.model.Candidate;
+import ro.kudostech.kudconnect.usermanagement.infrastructure.adapters.output.persistence.CandidateRepository;
+import ro.kudostech.kudconnect.usermanagement.ports.output.eventpublisher.CandidateEventPublisher;
 
 @ExtendWith(MockitoExtension.class)
 class CandidateServiceTest {
   @Mock private CandidateRepository candidateRepository;
   @Mock private CandidateMapper candidateMapper;
-  @Mock private ApplicationEventPublisher applicationEventPublisher;
+  @Mock private CandidateEventPublisher candidateEventPublisher;
 
   @InjectMocks
   private CandidatesServiceImpl cut;

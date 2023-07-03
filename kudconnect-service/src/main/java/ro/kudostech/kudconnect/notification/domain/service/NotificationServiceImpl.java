@@ -1,11 +1,11 @@
-package ro.kudostech.kudconnect.notification.internal;
+package ro.kudostech.kudconnect.notification.domain.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.modulith.ApplicationModuleListener;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import ro.kudostech.kudconnect.notification.NotificationService;
-import ro.kudostech.kudconnect.usermanagement.CandidateCdc;
+import ro.kudostech.kudconnect.notification.ports.input.NotificationService;
+import ro.kudostech.kudconnect.common.event.CandidateCdc;
 
 @Slf4j
 @Service

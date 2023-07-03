@@ -1,4 +1,4 @@
-package ro.kudostech.kudconnect.usermanagement;
+package ro.kudostech.kudconnect.common.event;
 
 import lombok.Builder;
 import lombok.Value;
