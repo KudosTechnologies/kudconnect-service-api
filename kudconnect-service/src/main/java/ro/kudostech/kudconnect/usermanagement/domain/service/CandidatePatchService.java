@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import ro.kudostech.kudconnect.api.server.model.PatchOperationCandidateDto;
 import ro.kudostech.kudconnect.api.server.model.PatchOperationDto;
 import ro.kudostech.kudconnect.common.exception.IllegalPatchArgumentException;
-import ro.kudostech.kudconnect.common.exception.PatchViolation;
+import ro.kudostech.kudconnect.common.exception.ConstraintViolationHelper;
 import ro.kudostech.kudconnect.usermanagement.domain.model.Candidate;
 
 import java.util.List;
@@ -52,14 +52,14 @@ public class CandidatePatchService {
               patchOperation.getOp().getValue(), patchOperation.getPath().getValue(), candidate);
       log.info(message);
       return Optional.of(
-          PatchViolation.forIllegalOperation(
+          ConstraintViolationHelper.buildConstraintViolation(
               message, Candidate.class, patchOperation.getPath().getValue()));
     }
     try {
       action.accept(candidate, patchOperation.getValue());
     } catch (IllegalPatchArgumentException e) {
       return Optional.of(
-          PatchViolation.forIllegalArgument(
+          ConstraintViolationHelper.buildConstraintViolation(
               "must be a valid " + e.getTarget(),
               e.getTarget(),
               patchOperation.getPath().getValue()));

@@ -5,30 +5,24 @@ import static ro.kudostech.kudconnect.configuration.Rfc7807ProblemBuilder.buildE
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.ValueInstantiationException;
+import jakarta.validation.ConstraintViolationException;
 import java.util.Arrays;
 import java.util.List;
-
-import jakarta.validation.ConstraintViolationException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import ro.kudostech.kudconnect.api.server.model.RFC7807ProblemDto;
 import ro.kudostech.kudconnect.api.server.model.ViolationDto;
-import ro.kudostech.kudconnect.common.exception.ViolationFactory;
+import ro.kudostech.kudconnect.common.exception.ConstraintViolationHelper;
 
 @Slf4j
-@RequiredArgsConstructor
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
-  private final ViolationFactory violationFactory;
-
+  
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ResponseEntity<RFC7807ProblemDto> handleHttpMessageNotReadable(
       HttpMessageNotReadableException ex, WebRequest request) {
@@ -62,9 +56,9 @@ public class GlobalExceptionHandler {
   public ResponseEntity<RFC7807ProblemDto> handleConstraintViolation(
           ConstraintViolationException ex, WebRequest request) {
 
-    final List<ViolationDto> violations = violationFactory.createViolations(ex.getConstraintViolations());
+    final List<ViolationDto> violations = ConstraintViolationHelper.createViolations(ex.getConstraintViolations());
     request.setAttribute("violations", violations, WebRequest.SCOPE_REQUEST);
-    return buildErrorResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR, request, violations);
+    return buildErrorResponse(ex, HttpStatus.BAD_REQUEST, request, violations);
   }
 
   @ExceptionHandler(Exception.class)
