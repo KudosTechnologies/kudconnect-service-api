@@ -13,3 +13,8 @@ spring:
     events:
       jdbc-schema-initialization:
         enabled: true
+
+logging:
+  level:
+    root: INFO
+

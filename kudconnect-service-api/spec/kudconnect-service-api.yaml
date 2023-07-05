@@ -46,51 +46,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/ResourceUUID'
   /candidates/{candidateId}:
+    parameters:
+      - $ref: '#/components/parameters/CandidateIdPathParameter'
     get:
       summary: Find candidate by ID
       operationId: getCandidateById
       tags:
         - Candidates
-      parameters:
-        - name: candidateId
-          in: path
-          description: ID of candidate to return
-          required: true
-          schema:
-            type: string
-            format: uuid
       responses:
         '200':
           description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Candidate'
-        '404':
-          description: Candidate not found
-    put:
-      summary: Updates a candidate with a new data
-      operationId: updateCandidate
-      tags:
-        - Candidates
-      parameters:
-        - name: candidateId
-          in: path
-          description: ID of candidate that need to be updated
-          required: true
-          schema:
-            type: integer
-            format: int64
-      requestBody:
-        description: Updated user object
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Candidate'
-        required: true
-      responses:
-        '200':
-          description: Candidate updated
           content:
             application/json:
               schema:
@@ -102,20 +67,42 @@ paths:
       operationId: deleteCandidate
       tags:
         - Candidates
-      parameters:
-        - name: candidateId
-          in: path
-          description: ID of the candidate to delete
-          required: true
-          schema:
-            type: string
-            format: uuid
       responses:
         '200':
           description: Candidate deleted
         '404':
           description: Candidate not found
+    patch:
+      description: >-
+        Updates a candidate with a new data.
+      summary: updates a candidate
+      operationId: patchCandidate
+      tags:
+        - Candidates
+      requestBody:
+        description: >-
+          The specification of the values to be updated for the user.
+          See path for possible fields to be updated
+          JSON Patch definition according to <a href="https://tools.ietf.org/html/rfc6902">RFC6902</a
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/PatchOperationCandidate'
+      responses:
+        204:
+          description: Candidate updated successfully
 components:
+  parameters:
+    CandidateIdPathParameter:
+      name: candidateId
+      in: path
+      required: true
+      example: 48a55ff9-9be7-42f9-b659-83a3d90666bf
+      schema:
+        type: string
+        format: uuid
   schemas:
     Candidate:
       type: object
@@ -146,6 +133,40 @@ components:
           description: The UUID of the resource
           example: 1a7588a5-a684-4cd7-8f98-11e660af2289
           format: uuid
+    PatchOperationCandidate:
+      description: All patchable paths of a candidate
+      type: object
+      properties:
+        path:
+          type: string
+          description: The path of the property to be updated
+          enum:
+            - "/firstName"
+            - "/lastName"
+            - "/email"
+      allOf:
+        - $ref: "#/components/schemas/JsonPatchOperation"
+    JsonPatchOperation:
+      description: JSON Patch definition according to <a href="http://tools.ietf.org/html/rfc6902">RFC6902</a>
+      required:
+        - op
+        - path
+      properties:
+        op:
+          description: Patch operation
+          type: string
+          enum:
+            - replace
+            - add
+            - remove
+        path:
+          type: string
+          description: The path of the property to be updated
+          example: "/somePath"
+        value:
+          type: object
+          description: The new value of the property to be updated
+          example: new value
     RFC7807Problem:
       description: Detailed information on the error
       properties:
@@ -198,3 +219,9 @@ components:
           type: string
           description: error description
           example: must be greater than or equal to 1
+  examples:
+    PatchArray:
+      value:
+        - op: "add"
+          path: "/firstName"
+          value: "John"
