@@ -32,7 +32,7 @@ public class CandidatePatchService {
               Map.ofEntries(
                   entry(FIRSTNAME, (Candidate c, Object o) -> c.setFirstName(o.toString()))));
 
-  public Set patch(Candidate candidate, List<PatchOperationCandidateDto> patchOperations) {
+  public Set<ConstraintViolation<?>> patch(Candidate candidate, List<PatchOperationCandidateDto> patchOperations) {
     return patchOperations.stream()
         .map(patchOperationCandidateDto -> doPatch(candidate, patchOperationCandidateDto))
         .filter(Optional::isPresent)
@@ -40,7 +40,7 @@ public class CandidatePatchService {
         .collect(Collectors.toSet());
   }
 
-  private Optional<ConstraintViolation> doPatch(
+  private Optional<ConstraintViolation<?>> doPatch(
       Candidate candidate, PatchOperationCandidateDto patchOperation) {
 
     final BiConsumer<Candidate, Object> action =

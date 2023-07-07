@@ -53,6 +53,6 @@ public class CandidatesController implements CandidatesApi {
   public ResponseEntity<Void> patchCandidate(
       UUID candidateId, List<PatchOperationCandidateDto> patchOperationCandidateDto) {
     candidateService.updateCandidate(candidateId.toString(), patchOperationCandidateDto);
-    return null;
+    return ResponseEntity.noContent().build();
   }
 }
