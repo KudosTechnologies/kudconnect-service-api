@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ro.kudostech.kudconnect.api.server.CandidatesApi;
 import ro.kudostech.kudconnect.api.server.model.CandidateDto;
+import ro.kudostech.kudconnect.api.server.model.PatchOperationCandidateDto;
 import ro.kudostech.kudconnect.api.server.model.ResourceUUIDDto;
 import ro.kudostech.kudconnect.usermanagement.ports.input.CandidateService;
 
@@ -49,7 +50,9 @@ public class CandidatesController implements CandidatesApi {
   }
 
   @Override
-  public ResponseEntity<CandidateDto> updateCandidate(Long candidateId, CandidateDto candidateDto) {
-    return null;
+  public ResponseEntity<Void> patchCandidate(
+      UUID candidateId, List<PatchOperationCandidateDto> patchOperationCandidateDto) {
+    candidateService.updateCandidate(candidateId.toString(), patchOperationCandidateDto);
+    return ResponseEntity.noContent().build();
   }
 }
