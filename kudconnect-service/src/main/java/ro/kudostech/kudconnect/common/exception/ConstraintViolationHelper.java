@@ -8,11 +8,11 @@ import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import org.hibernate.validator.internal.engine.ConstraintViolationImpl;
 import org.hibernate.validator.internal.engine.path.PathImpl;
-import ro.kudostech.kudconnect.api.server.model.ViolationDto;
+import ro.kudostech.kudconnect.api.server.model.Violation;
 
 @UtilityClass
 public class ConstraintViolationHelper {
-  public List<ViolationDto> createViolations(Set<ConstraintViolation<?>> violations) {
+  public List<Violation> createViolations(Set<ConstraintViolation<?>> violations) {
     return violations.stream()
         .map(ConstraintViolationHelper::createViolation)
         .collect(Collectors.toList());
@@ -36,9 +36,9 @@ public class ConstraintViolationHelper {
         null);
   }
 
-  private ViolationDto createViolation(ConstraintViolation<?> constraintViolation) {
+  private Violation createViolation(ConstraintViolation<?> constraintViolation) {
     final String fieldName = constraintViolation.getPropertyPath().toString();
-    return new ViolationDto().field(fieldName).message(constraintViolation.getMessage());
+    return new Violation().field(fieldName).message(constraintViolation.getMessage());
   }
 
   private static Path pathFromString(final String nodeName) {

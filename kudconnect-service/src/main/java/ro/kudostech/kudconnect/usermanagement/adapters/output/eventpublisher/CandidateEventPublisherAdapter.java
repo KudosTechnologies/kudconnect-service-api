@@ -1,4 +1,4 @@
-package ro.kudostech.kudconnect.usermanagement.infrastructure.adapters.output.eventpublisher;
+package ro.kudostech.kudconnect.usermanagement.adapters.output.eventpublisher;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;

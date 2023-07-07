@@ -3,8 +3,8 @@ package ro.kudostech.kudconnect.usermanagement.domain.mapper;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ro.kudostech.kudconnect.api.server.model.CandidateDto;
-import ro.kudostech.kudconnect.usermanagement.domain.model.Candidate;
+import ro.kudostech.kudconnect.api.server.model.Candidate;
+import ro.kudostech.kudconnect.usermanagement.adapters.output.persistence.model.CandidateDbo;
 
 @Mapper(
     componentModel = "spring",
@@ -12,8 +12,8 @@ import ro.kudostech.kudconnect.usermanagement.domain.model.Candidate;
     uses = {CommonMapper.class})
 public interface CandidateMapper {
   @Mapping(source = "id", target = "id", qualifiedByName = "stringToUUID")
-  CandidateDto toCandidateDto(Candidate candidate);
+  Candidate toCandidate(CandidateDbo candidateDbo);
 
   @Mapping(source = "id", target = "id", qualifiedByName = "UUIDToString")
-  Candidate toCandidate(CandidateDto candidateDto);
+  CandidateDbo toCandidateDbo(Candidate candidate);
 }

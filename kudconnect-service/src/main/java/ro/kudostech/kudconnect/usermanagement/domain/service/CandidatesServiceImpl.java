@@ -12,13 +12,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.HibernateValidator;
 import org.springframework.stereotype.Service;
-import ro.kudostech.kudconnect.api.server.model.CandidateDto;
-import ro.kudostech.kudconnect.api.server.model.PatchOperationCandidateDto;
+import ro.kudostech.kudconnect.api.server.model.Candidate;
+import ro.kudostech.kudconnect.api.server.model.PatchOperationCandidate;
 import ro.kudostech.kudconnect.common.event.CandidateCdc;
 import ro.kudostech.kudconnect.common.exception.PropertyPathProvider;
 import ro.kudostech.kudconnect.usermanagement.domain.mapper.CandidateMapper;
-import ro.kudostech.kudconnect.usermanagement.domain.model.Candidate;
-import ro.kudostech.kudconnect.usermanagement.infrastructure.adapters.output.persistence.CandidateRepository;
+import ro.kudostech.kudconnect.usermanagement.adapters.output.persistence.model.CandidateDbo;
+import ro.kudostech.kudconnect.usermanagement.adapters.output.persistence.CandidateRepository;
 import ro.kudostech.kudconnect.usermanagement.ports.input.CandidateService;
 import ro.kudostech.kudconnect.usermanagement.ports.output.eventpublisher.CandidateEventPublisher;
 
@@ -32,25 +32,25 @@ public class CandidatesServiceImpl implements CandidateService {
   private final CandidateEventPublisher eventPublisher;
   private final CandidatePatchService candidatePatchService;
 
-  public CandidateDto getCandidateById(String userId) {
+  public Candidate getCandidateById(String userId) {
     return candidateRepository
         .findById(userId)
-        .map(candidateMapper::toCandidateDto)
+        .map(candidateMapper::toCandidate)
         .orElseThrow(() -> new RuntimeException("User with id " + userId + " not found"));
   }
 
-  public List<CandidateDto> getAllCandidates() {
-    return candidateRepository.findAll().stream().map(candidateMapper::toCandidateDto).toList();
+  public List<Candidate> getAllCandidates() {
+    return candidateRepository.findAll().stream().map(candidateMapper::toCandidate).toList();
   }
 
   @Transactional
-  public CandidateDto createCandidate(CandidateDto candidateDto) {
-    Candidate candidate = candidateMapper.toCandidate(candidateDto);
-    candidateRepository.save(candidate);
+  public Candidate createCandidate(Candidate candidate) {
+    CandidateDbo candidateDbo = candidateMapper.toCandidateDbo(candidate);
+    candidateRepository.save(candidateDbo);
     CandidateCdc candidateCdc =
-        CandidateCdc.builder().id(candidate.getId()).email(candidate.getEmail()).build();
+        CandidateCdc.builder().id(candidateDbo.getId()).email(candidateDbo.getEmail()).build();
     eventPublisher.publishCandidateCDCEvent(candidateCdc);
-    return candidateMapper.toCandidateDto(candidate);
+    return candidateMapper.toCandidate(candidateDbo);
   }
 
   @Transactional
@@ -61,24 +61,24 @@ public class CandidatesServiceImpl implements CandidateService {
 
   @Override
   @Transactional
-  public void updateCandidate(String candidateId, List<PatchOperationCandidateDto> patchOperations) {
-    Candidate candidate = candidateRepository
+  public void updateCandidate(String candidateId, List<PatchOperationCandidate> patchOperations) {
+    CandidateDbo candidateDbo = candidateRepository
             .findById(candidateId)
             .orElseThrow(() -> new RuntimeException("User with id " + candidateId + " not found"));
-    Set<ConstraintViolation<?>> violations = candidatePatchService.patch(candidate, patchOperations);
+    Set<ConstraintViolation<?>> violations = candidatePatchService.patch(candidateDbo, patchOperations);
     try (ValidatorFactory validatorFactory = byProvider(HibernateValidator.class)
             .configure()
             .propertyNodeNameProvider(new PropertyPathProvider())
             .buildValidatorFactory()) {
       violations.addAll(validatorFactory
               .getValidator()
-              .validate(candidate));
+              .validate(candidateDbo));
     }
     if (!violations.isEmpty()) {
-      log.info("Could not validate patches for user {}.\nFound the following violations: {}", candidate, violations);
+      log.info("Could not validate patches for user {}.\nFound the following violations: {}", candidateDbo, violations);
       throw new ConstraintViolationException("violations", violations);
     } else {
-      log.debug("Successfully validated patches for user {}.", candidate);
+      log.debug("Successfully validated patches for user {}.", candidateDbo);
     }
   }
 }
