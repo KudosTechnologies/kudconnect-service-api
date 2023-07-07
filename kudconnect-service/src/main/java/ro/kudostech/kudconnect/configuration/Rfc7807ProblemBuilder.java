@@ -4,8 +4,8 @@ import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.WebRequest;
-import ro.kudostech.kudconnect.api.server.model.RFC7807ProblemDto;
-import ro.kudostech.kudconnect.api.server.model.ViolationDto;
+import ro.kudostech.kudconnect.api.server.model.RFC7807Problem;
+import ro.kudostech.kudconnect.api.server.model.Violation;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
@@ -13,12 +13,12 @@ import java.util.List;
 
 @UtilityClass
 public class Rfc7807ProblemBuilder {
-  public static ResponseEntity<RFC7807ProblemDto> buildErrorResponse(
+  public static ResponseEntity<RFC7807Problem> buildErrorResponse(
       Exception exception,
       HttpStatus httpStatus,
       WebRequest request,
-      List<ViolationDto> violations) {
-    RFC7807ProblemDto problem = new RFC7807ProblemDto();
+      List<Violation> violations) {
+    RFC7807Problem problem = new RFC7807Problem();
     problem.setStatus(httpStatus.value());
     problem.setTitle(httpStatus.name());
     problem.setDetail(exception.getMessage());

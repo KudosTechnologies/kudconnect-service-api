@@ -1,4 +1,4 @@
-package ro.kudostech.kudconnect.usermanagement.infrastructure.adapters.input;
+package ro.kudostech.kudconnect.usermanagement.adapters.input;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -6,9 +6,9 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ro.kudostech.kudconnect.api.server.CandidatesApi;
-import ro.kudostech.kudconnect.api.server.model.CandidateDto;
-import ro.kudostech.kudconnect.api.server.model.PatchOperationCandidateDto;
-import ro.kudostech.kudconnect.api.server.model.ResourceUUIDDto;
+import ro.kudostech.kudconnect.api.server.model.Candidate;
+import ro.kudostech.kudconnect.api.server.model.PatchOperationCandidate;
+import ro.kudostech.kudconnect.api.server.model.ResourceUUID;
 import ro.kudostech.kudconnect.usermanagement.ports.input.CandidateService;
 
 
@@ -22,14 +22,14 @@ public class CandidatesController implements CandidatesApi {
   private final CandidateService candidateService;
 
   @Override
-  public ResponseEntity<ResourceUUIDDto> createCandidate(CandidateDto candidateDto) {
-    CandidateDto savedCandidate = candidateService.createCandidate(candidateDto);
+  public ResponseEntity<ResourceUUID> createCandidate(Candidate candidate) {
+    Candidate savedCandidate = candidateService.createCandidate(candidate);
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
             .buildAndExpand(savedCandidate.getId())
             .toUri();
-    return ResponseEntity.created(location).body(new ResourceUUIDDto().id(savedCandidate.getId()));
+    return ResponseEntity.created(location).body(new ResourceUUID().id(savedCandidate.getId()));
   }
 
   @Override
@@ -39,20 +39,20 @@ public class CandidatesController implements CandidatesApi {
   }
 
   @Override
-  public ResponseEntity<CandidateDto> getCandidateById(@NonNull UUID candidateId) {
-    CandidateDto candidateDto = candidateService.getCandidateById(candidateId.toString());
-    return ResponseEntity.ok(candidateDto);
+  public ResponseEntity<Candidate> getCandidateById(@NonNull UUID candidateId) {
+    Candidate candidate = candidateService.getCandidateById(candidateId.toString());
+    return ResponseEntity.ok(candidate);
   }
 
   @Override
-  public ResponseEntity<List<CandidateDto>> listCandidates() {
+  public ResponseEntity<List<Candidate>> listCandidates() {
     return ResponseEntity.ok(candidateService.getAllCandidates());
   }
 
   @Override
   public ResponseEntity<Void> patchCandidate(
-      UUID candidateId, List<PatchOperationCandidateDto> patchOperationCandidateDto) {
-    candidateService.updateCandidate(candidateId.toString(), patchOperationCandidateDto);
+      UUID candidateId, List<PatchOperationCandidate> patchOperationCandidate) {
+    candidateService.updateCandidate(candidateId.toString(), patchOperationCandidate);
     return ResponseEntity.noContent().build();
   }
 }

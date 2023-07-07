@@ -6,7 +6,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import ro.kudostech.kudconnect.AutowiredIgnoreWarning;
-import ro.kudostech.kudconnect.api.client.CandidateDto;
+import ro.kudostech.kudconnect.api.client.Candidate;
 
 public class CrudCandidateSteps {
 
@@ -21,8 +21,8 @@ public class CrudCandidateSteps {
 
   @When("I create a candidate with email {string}")
   public void createCandidate(String email) {
-    CandidateDto candidateDto = new CandidateDto().email(email);
-    testContext.getCandidatesApi().createCandidate(candidateDto);
+    Candidate candidate = new Candidate().email(email).firstName("John");
+    testContext.getCandidatesApi().createCandidate(candidate);
   }
 
   @Then("the system should have a candidate with email {string}")

@@ -194,7 +194,6 @@ tasks.register('buildJavaClient', GenerateTask) {
     outputDir = openApiClientDir
     apiPackage = 'ro.kudostech.kudconnect.api.client'
     modelPackage = 'ro.kudostech.kudconnect.api.client'
-    modelNameSuffix = 'Dto'
     configOptions = [
             artifactDescription    : "generated organizationApi",
             artifactId             : "organizationApi",
@@ -217,7 +216,6 @@ tasks.register('buildJavaServer', GenerateTask) {
     outputDir = openApiServerDir
     apiPackage = 'ro.kudostech.kudconnect.api.server'
     modelPackage = 'ro.kudostech.kudconnect.api.server.model'
-    modelNameSuffix = 'Dto'
 
     configOptions = [
             dateLibrary                   : "java8",

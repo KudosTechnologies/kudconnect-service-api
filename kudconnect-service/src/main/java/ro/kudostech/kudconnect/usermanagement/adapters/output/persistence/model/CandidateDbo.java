@@ -1,10 +1,11 @@
-package ro.kudostech.kudconnect.usermanagement.domain.model;
+package ro.kudostech.kudconnect.usermanagement.adapters.output.persistence.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,12 +15,13 @@ import lombok.Setter;
 import ro.kudostech.kudconnect.common.PropertyPath;
 
 @Entity
+@Table(name = "candidate")
 @Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Candidate {
+public class CandidateDbo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.WebRequest;
-import ro.kudostech.kudconnect.api.server.model.RFC7807ProblemDto;
-import ro.kudostech.kudconnect.api.server.model.ViolationDto;
+import ro.kudostech.kudconnect.api.server.model.RFC7807Problem;
+import ro.kudostech.kudconnect.api.server.model.Violation;
 import ro.kudostech.kudconnect.common.exception.ConstraintViolationHelper;
 
 @Slf4j
@@ -25,7 +25,7 @@ import ro.kudostech.kudconnect.common.exception.ConstraintViolationHelper;
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
-  public ResponseEntity<RFC7807ProblemDto> handleHttpMessageNotReadable(
+  public ResponseEntity<RFC7807Problem> handleHttpMessageNotReadable(
       HttpMessageNotReadableException ex, WebRequest request) {
 
     log.error(ex.getMessage(), ex);
@@ -53,38 +53,38 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(ConstraintViolationException.class)
-  public ResponseEntity<RFC7807ProblemDto> handleConstraintViolation(
+  public ResponseEntity<RFC7807Problem> handleConstraintViolation(
       ConstraintViolationException ex, WebRequest request) {
 
-    final List<ViolationDto> violations =
+    final List<Violation> violations =
         ConstraintViolationHelper.createViolations(ex.getConstraintViolations());
     request.setAttribute("violations", violations, RequestAttributes.SCOPE_REQUEST);
     return buildErrorResponse(ex, HttpStatus.BAD_REQUEST, request, violations);
   }
 
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<RFC7807ProblemDto> handleAllUncaughtExceptions(
+  public ResponseEntity<RFC7807Problem> handleAllUncaughtExceptions(
       Exception ex, WebRequest request) {
     log.error(ex.getMessage(), ex);
     return buildErrorResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR, request, List.of());
   }
 
-  private ResponseEntity<RFC7807ProblemDto> invalidField(String fieldName, String targetType) {
-    final RFC7807ProblemDto problemDto = new RFC7807ProblemDto();
-    problemDto.setStatus(HttpStatus.BAD_REQUEST.value());
-    problemDto.setTitle("Bad Request");
-    problemDto.setDetail(fieldName + " can't be parsed as " + targetType);
-    return new ResponseEntity<>(problemDto, HttpStatus.BAD_REQUEST);
+  private ResponseEntity<RFC7807Problem> invalidField(String fieldName, String targetType) {
+    final RFC7807Problem problem = new RFC7807Problem();
+    problem.setStatus(HttpStatus.BAD_REQUEST.value());
+    problem.setTitle("Bad Request");
+    problem.setDetail(fieldName + " can't be parsed as " + targetType);
+    return new ResponseEntity<>(problem, HttpStatus.BAD_REQUEST);
   }
 
-  private ResponseEntity<RFC7807ProblemDto> invalidEnum(Class<?> target) {
-    final RFC7807ProblemDto problemDto = new RFC7807ProblemDto();
-    problemDto.setStatus(HttpStatus.BAD_REQUEST.value());
-    problemDto.setTitle("Bad Request");
-    problemDto.setDetail(
+  private ResponseEntity<RFC7807Problem> invalidEnum(Class<?> target) {
+    final RFC7807Problem problem = new RFC7807Problem();
+    problem.setStatus(HttpStatus.BAD_REQUEST.value());
+    problem.setTitle("Bad Request");
+    problem.setDetail(
         String.format(
             "Invalid %s. Supported values are %s",
             target.getSimpleName(), Arrays.toString(target.getEnumConstants())));
-    return new ResponseEntity<>(problemDto, HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<>(problem, HttpStatus.BAD_REQUEST);
   }
 }
