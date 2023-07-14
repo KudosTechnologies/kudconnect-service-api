@@ -1,27 +1,36 @@
 package ro.kudostech.kudconnect.step;
 
+import org.jose4j.lang.JoseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import ro.kudostech.kudconnect.api.ApiClient;
+import ro.kudostech.kudconnect.api.auth.HttpBearerAuth;
 import ro.kudostech.kudconnect.api.client.CandidatesApi;
+
+import static ro.kudostech.kudconnect.AcceptanceTestConfiguration.generateJWT;
+import static ro.kudostech.kudconnect.TestMain.generateJwKSet;
+import static ro.kudostech.kudconnect.TestMain.generateToken;
 
 @Component
 public class TestContext {
 
-    @Autowired
-    private TestRestTemplate testRestTemplate;
+  @Autowired private TestRestTemplate testRestTemplate;
 
-    private ApiClient initClient() {
-    ApiClient apiClient =
-        new ApiClient(new RestTemplate(new HttpComponentsClientHttpRequestFactory()));
+  private ApiClient initClient() throws JoseException {
+    RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
+//    restTemplate.getInterceptors().add(new AuthorizationInterceptor(generateToken()));
+//    restTemplate.getInterceptors().add(new AuthorizationInterceptor("eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJLNS1zZG9PSUVmeU5TLWh5Mm0tZEZUMEVtNndDcVdwVFhxTHBRdHNXNVk0In0.eyJleHAiOjE2ODkzMTQ3NDUsImlhdCI6MTY4OTMxNDQ0NSwianRpIjoiZDVkOWMyNGYtY2IyMi00ZmVhLTlmODctYTU0OTQ4YjU5OWY2IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo5MDgwL3JlYWxtcy9TcHJpbmdCb290S2V5Y2xvYWsiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiZmZjODRlZWUtZDA1Ny00Y2FhLWI0YWEtMTIyMjlhMGM2OGE4IiwidHlwIjoiQmVhcmVyIiwiYXpwIjoic3ByaW5nYm9vdC1rZXljbG9hay1jbGllbnQiLCJzZXNzaW9uX3N0YXRlIjoiYjE5MDY5ODEtNTBkYi00NzAwLThmYjYtZmI2OWZiYTdjZGI3IiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyIvKiJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiYXBwX3VzZXIiLCJvZmZsaW5lX2FjY2VzcyIsImRlZmF1bHQtcm9sZXMtc3ByaW5nYm9vdGtleWNsb2FrIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJzcHJpbmdib290LWtleWNsb2FrLWNsaWVudCI6eyJyb2xlcyI6WyJ1c2VyIl19LCJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6InByb2ZpbGUgZW1haWwiLCJzaWQiOiJiMTkwNjk4MS01MGRiLTQ3MDAtOGZiNi1mYjY5ZmJhN2NkYjciLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmFtZSI6IlVzZXIxIiwicHJlZmVycmVkX3VzZXJuYW1lIjoidXNlcjEiLCJnaXZlbl9uYW1lIjoiVXNlcjEiLCJmYW1pbHlfbmFtZSI6IiIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20ifQ.cG-QwpgZFqPcXJAmSP0SKMbH86gN9WagX5bhHW7nno4bMq1v6CMQtZxLGKj1dbeP_Jo2LHk3f6h2aJslupPdgGjTAdUD1JgAeULIs55ekLu4HMHa1sq7T_exOrV312nL-kZSf4eIbDq9H11eqPWkRFQ8mpYDpvdjRGCFUUAUc8L2hTF5PkqUYhbEYiVl0qtfxsjRmqCFiP5_wbINBfymS8wPn7UoI9RgR52JCXzCATJZrxFS95KV7pm0jjl39Tt5wHr1PdpbcWXgk_p_6SH0c_xlq7lp4i6dqTAWNbHfBtOKjMmiFCrvdp3OGUy6EQ0gwkvfr_RchBxqP_8njvslPQ"));
+    restTemplate.getInterceptors().add(new AuthorizationInterceptor(generateJWT(true)));
+
+    ApiClient apiClient = new ApiClient(restTemplate);
     apiClient.setBasePath(testRestTemplate.getRootUri());
-        return apiClient;
-    }
+    return apiClient;
+  }
 
-    public final CandidatesApi getCandidatesApi() {
-        return new CandidatesApi(initClient());
-    }
+  public final CandidatesApi getCandidatesApi() throws JoseException {
+    return new CandidatesApi(initClient());
+  }
 }

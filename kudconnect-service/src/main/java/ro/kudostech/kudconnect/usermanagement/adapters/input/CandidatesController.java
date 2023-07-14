@@ -39,6 +39,7 @@ public class CandidatesController implements CandidatesApi {
   }
 
   @Override
+//  @PreAuthorize("hasRole('user')")
   public ResponseEntity<Candidate> getCandidateById(@NonNull UUID candidateId) {
     Candidate candidate = candidateService.getCandidateById(candidateId.toString());
     return ResponseEntity.ok(candidate);
