@@ -12,8 +12,6 @@ import ro.kudostech.kudconnect.configuration.TestContext;
 public class CrudCandidateSteps {
 
   @AutowiredIgnoreWarning private TestContext testContext;
-  
-  
 
   @Given("the system has no existing candidate with email {string}")
   public void systemHasNoCandidateWithEmail(String email) {

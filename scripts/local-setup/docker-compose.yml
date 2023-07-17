@@ -14,9 +14,9 @@ services:
 
   keycloak:
     image: quay.io/keycloak/keycloak:21.1
-    command: ['start-dev']
-#    volumes:
-#      - ./realm-config:/opt/keycloak/data/import
+    command: ['start-dev --import-realm']
+    volumes:
+      - ./realm-config:/opt/keycloak/data/import
     environment:
       - KC_DB=dev-file
       - KEYCLOAK_ADMIN=admin

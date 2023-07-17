@@ -3,7 +3,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: "http://localhost:${wiremock.server.port}/realms/SpringBootKeycloak"
+          issuer-uri: "http://localhost:${wiremock.server.port}/realms/kudconnect"
           jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
   datasource:
     url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
@@ -22,5 +22,5 @@ spring:
 jwt:
   auth:
     converter:
-      resource-id: springboot-keycloak-client
+      resource-id: kudconnect-client
       principle-attribute: preferred_username
