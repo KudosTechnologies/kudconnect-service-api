@@ -76,6 +76,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.modulith:spring-modulith-starter-core'
     implementation 'org.springframework.modulith:spring-modulith-starter-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     runtimeOnly 'org.springframework.boot:spring-boot-starter-actuator'
 
     implementation group: 'io.swagger.core.v3', name: 'swagger-annotations', version: '2.2.12'
@@ -109,6 +111,11 @@ dependencies {
     acceptanceImplementation 'javax.validation:validation-api:2.0.1.Final'
     acceptanceImplementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
     acceptanceImplementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.2.1'
+    acceptanceImplementation group: 'org.bitbucket.b_c', name: 'jose4j', version: '0.9.3'
+
+    acceptanceImplementation group: 'com.github.tomakehurst', name: 'wiremock-jre8-standalone', version: '2.35.0'
+
+
 }
 processResources {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE

@@ -13,4 +13,6 @@ import org.junit.runner.RunWith;
       "html:build/reports/cucumber.html",
       "json:build/reports/cucumber-json/cucumber.json"
     })
-public class AcceptanceTests {}
+public class AcceptanceTests {
+
+}

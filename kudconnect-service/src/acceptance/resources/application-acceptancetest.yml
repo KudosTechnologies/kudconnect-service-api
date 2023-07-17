@@ -1,4 +1,10 @@
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "http://localhost:${wiremock.server.port}/realms/kudconnect"
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
   datasource:
     url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     username: sa
@@ -12,3 +18,9 @@ spring:
     console:
       enabled: true
       path: /console
+
+jwt:
+  auth:
+    converter:
+      resource-id: kudconnect-client
+      principle-attribute: preferred_username
