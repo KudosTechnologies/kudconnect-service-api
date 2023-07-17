@@ -12,11 +12,13 @@ import ro.kudostech.kudconnect.configuration.TestContext;
 public class CrudCandidateSteps {
 
   @AutowiredIgnoreWarning private TestContext testContext;
+  
+  
 
   @Given("the system has no existing candidate with email {string}")
   public void systemHasNoCandidateWithEmail(String email) {
     assertThat(
-            testContext.getCandidatesApi().listCandidates().stream()
+            testContext.getCandidatesApiWithAdminAccess().listCandidates().stream()
                 .anyMatch(candidate -> candidate.getEmail().equals(email)))
         .isFalse();
   }
@@ -24,13 +26,13 @@ public class CrudCandidateSteps {
   @When("I create a candidate with email {string}")
   public void createCandidate(String email) {
     Candidate candidate = new Candidate().email(email).firstName("John");
-    testContext.getCandidatesApi().createCandidate(candidate);
+    testContext.getCandidatesApiWithAdminAccess().createCandidate(candidate);
   }
 
   @Then("the system should have a candidate with email {string}")
   public void systemShouldHaveCandidate(String email) {
     assertThat(
-            testContext.getCandidatesApi().listCandidates().stream()
+            testContext.getCandidatesApiWithAdminAccess().listCandidates().stream()
                 .anyMatch(candidate -> candidate.getEmail().equals(email)))
         .isTrue();
   }

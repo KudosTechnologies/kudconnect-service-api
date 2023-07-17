@@ -3,6 +3,7 @@ package ro.kudostech.kudconnect.usermanagement.adapters.input;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ro.kudostech.kudconnect.api.server.CandidatesApi;
@@ -22,6 +23,7 @@ public class CandidatesController implements CandidatesApi {
   private final CandidateService candidateService;
 
   @Override
+  @PreAuthorize("hasRole('admin')")
   public ResponseEntity<ResourceUUID> createCandidate(Candidate candidate) {
     Candidate savedCandidate = candidateService.createCandidate(candidate);
     URI location =
@@ -39,7 +41,7 @@ public class CandidatesController implements CandidatesApi {
   }
 
   @Override
-//  @PreAuthorize("hasRole('user')")
+  @PreAuthorize("hasRole('user')")
   public ResponseEntity<Candidate> getCandidateById(@NonNull UUID candidateId) {
     Candidate candidate = candidateService.getCandidateById(candidateId.toString());
     return ResponseEntity.ok(candidate);

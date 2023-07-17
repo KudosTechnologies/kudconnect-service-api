@@ -1,6 +1,5 @@
 package ro.kudostech.kudconnect.configuration;
 
-
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -18,19 +17,20 @@ public class TestContext {
     this.testRestTemplate = testRestTemplate;
   }
 
-  private ApiClient initClient() {
+  private ApiClient initClient(String accessToken) {
     RestTemplate restTemplate = new RestTemplate();
-    restTemplate.getInterceptors()
-            .add(new AuthorizationInterceptor(TokenUtils
-                    .generateJWT(WireMockConfigurations.keycloakBaseUrl,
-                            WireMockConfigurations.KEYCLOAK_REALM)));
+    restTemplate.getInterceptors().add(new AuthorizationInterceptor(accessToken));
 
     ApiClient apiClient = new ApiClient(restTemplate);
     apiClient.setBasePath(testRestTemplate.getRootUri());
     return apiClient;
   }
 
-  public final CandidatesApi getCandidatesApi() {
-    return new CandidatesApi(initClient());
+  public final CandidatesApi getCandidatesApiWithAdminAccess() {
+    return new CandidatesApi(initClient(TokenUtils.generateAdminJWT()));
+  }
+
+  public final CandidatesApi getCandidatesApiWithUserAccess() {
+    return new CandidatesApi(initClient(TokenUtils.generateUserJWT()));
   }
 }

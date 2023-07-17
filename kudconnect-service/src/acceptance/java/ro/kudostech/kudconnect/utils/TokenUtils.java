@@ -12,8 +12,13 @@ import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.NumericDate;
 import org.jose4j.lang.JoseException;
+import ro.kudostech.kudconnect.configuration.WireMockConfigurations;
 
 public final class TokenUtils {
+  public static final String KEYCLOAK_REALM = "SpringBootKeycloak";
+  public static final String JWT_RESOURCE_ID = "springboot-keycloak-client";
+  public static final String ROLE_USER = "user";
+  public static final String ROLE_ADMIN = "admin";
 
   private static final RsaJsonWebKey rsaJsonWebKey;
 
@@ -35,50 +40,57 @@ public final class TokenUtils {
     return rsaJsonWebKey;
   }
 
-  /** Generate JWT Token. */
-  public static String generateJWT(final String keycloakBaseUrl, final String keycloakRealm) {
+  public static String generateUserJWT() {
+    return generateJWT(createClaims(List.of(ROLE_USER)));
+  }
 
+  public static String generateAdminJWT() {
+    return generateJWT(createClaims(List.of(ROLE_USER, ROLE_ADMIN)));
+  }
+
+  private static JwtClaims createClaims(List<String> roles) {
     // Create the Claims, which will be the content of the JWT
     JwtClaims claims = new JwtClaims();
     claims.setJwtId(UUID.randomUUID().toString()); // a unique identifier for the token
     claims.setExpirationTimeMinutesInTheFuture(
-            10); // time when the token will expire (10 minutes from now)
+        10); // time when the token will expire (10 minutes from now)
     claims.setNotBeforeMinutesInThePast(
-            0); // time before which the token is not yet valid (2 minutes ago)
+        0); // time before which the token is not yet valid (2 minutes ago)
     claims.setIssuedAtToNow(); // when the token was issued/created (now)
     claims.setAudience("account"); // to whom this token is intended to be sent
     claims.setIssuer(
-            String.format(
-                    "%s/realms/%s", keycloakBaseUrl, keycloakRealm)); // who creates the token and signs it
+        String.format(
+            "%s/realms/%s",
+            WireMockConfigurations.keycloakBaseUrl,
+            KEYCLOAK_REALM)); // who creates the token and signs it
     claims.setSubject(
-            UUID.randomUUID().toString()); // the subject/principal is whom the token is about
+        UUID.randomUUID().toString()); // the subject/principal is whom the token is about
     claims.setClaim("typ", "Bearer"); // set type of token
     claims.setClaim(
-            "azp", "example-client-id"); // Authorized party  (the party to which this token was issued)
+        "azp", "example-client-id"); // Authorized party  (the party to which this token was issued)
     claims.setClaim(
-            "auth_time",
-            NumericDate.fromMilliseconds(Instant.now().minus(11, ChronoUnit.SECONDS).toEpochMilli())
-                    .getValue()); // time when authentication occured
+        "auth_time",
+        NumericDate.fromMilliseconds(Instant.now().minus(11, ChronoUnit.SECONDS).toEpochMilli())
+            .getValue()); // time when authentication occured
     claims.setClaim("session_state", UUID.randomUUID().toString()); // keycloak specific ???
     claims.setClaim("acr", "0"); // Authentication context class
     claims.setClaim(
-            "realm_access",
-            Map.of("roles", List.of("offline_access", "uma_authorization", "user"))); // keycloak roles
+        "realm_access",
+        Map.of("roles", List.of("offline_access", "uma_authorization", "user"))); // keycloak roles
     claims.setClaim(
-            "resource_access",
-            Map.of(
-                    "account",
-                    Map.of(
-                            "roles",
-                            List.of(
-                                    "manage-account", "manage-account-links", "view-profile")))); // keycloak roles
+        "resource_access", Map.of(JWT_RESOURCE_ID, Map.of("roles", roles))); // keycloak roles
     claims.setClaim("scope", "profile email");
     claims.setClaim(
-            "name", "John Doe"); // additional claims/attributes about the subject can be added
+        "name", "John Doe"); // additional claims/attributes about the subject can be added
     claims.setClaim("email_verified", true);
     claims.setClaim("preferred_username", "doe.john");
     claims.setClaim("given_name", "John");
     claims.setClaim("family_name", "Doe");
+    return claims;
+  }
+
+  /** Generate JWT Token. */
+  private static String generateJWT(JwtClaims claims) {
 
     // A JWT is a JWS and/or a JWE with JSON claims as the payload.
     // In this example it is a JWS so we create a JsonWebSignature object.

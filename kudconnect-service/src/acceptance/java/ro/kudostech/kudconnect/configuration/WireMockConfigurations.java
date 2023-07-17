@@ -27,7 +27,6 @@ public class WireMockConfigurations {
 
   private static WireMockServer wireMockServer;
   public static String keycloakBaseUrl;
-  public static final String KEYCLOAK_REALM = "SpringBootKeycloak";
 
   @BeforeAll
   public static void setUp() {
@@ -42,7 +41,7 @@ public class WireMockConfigurations {
     stubFor(
         WireMock.get(
                 urlEqualTo(
-                    String.format("/realms/%s/protocol/openid-connect/certs", KEYCLOAK_REALM)))
+                    String.format("/realms/%s/protocol/openid-connect/certs", TokenUtils.KEYCLOAK_REALM)))
             .willReturn(
                 aResponse()
                     .withHeader("Content-Type", "application/json")
