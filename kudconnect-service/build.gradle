@@ -78,7 +78,7 @@ dependencies {
     implementation 'org.springframework.modulith:spring-modulith-starter-jpa'
     runtimeOnly 'org.springframework.boot:spring-boot-starter-actuator'
 
-    implementation group: 'io.swagger.core.v3', name: 'swagger-annotations', version: '2.2.12'
+    implementation group: 'io.swagger.core.v3', name: 'swagger-annotations', version: '2.2.15'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     implementation group: 'org.mapstruct', name: 'mapstruct', version: '1.5.5.Final'
