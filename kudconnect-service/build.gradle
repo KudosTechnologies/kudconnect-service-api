@@ -103,7 +103,7 @@ dependencies {
     acceptanceImplementation 'com.h2database:h2:2.2.220'
     acceptanceImplementation 'io.rest-assured:rest-assured'
     acceptanceImplementation 'io.cucumber:cucumber-java:7.13.0'
-    acceptanceImplementation 'io.cucumber:cucumber-junit:7.12.1'
+    acceptanceImplementation 'io.cucumber:cucumber-junit:7.13.0'
     acceptanceImplementation 'io.cucumber:cucumber-spring:7.13.0'
     acceptanceImplementation 'org.awaitility:awaitility:4.2.0'
     acceptanceImplementation 'com.auth0:java-jwt:4.4.0'
