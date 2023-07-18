@@ -102,7 +102,7 @@ dependencies {
     acceptanceImplementation('org.springframework.boot:spring-boot-starter-test')
     acceptanceImplementation 'com.h2database:h2:2.1.214'
     acceptanceImplementation 'io.rest-assured:rest-assured'
-    acceptanceImplementation 'io.cucumber:cucumber-java:7.12.1'
+    acceptanceImplementation 'io.cucumber:cucumber-java:7.13.0'
     acceptanceImplementation 'io.cucumber:cucumber-junit:7.12.1'
     acceptanceImplementation 'io.cucumber:cucumber-spring:7.12.1'
     acceptanceImplementation 'org.awaitility:awaitility:4.2.0'
