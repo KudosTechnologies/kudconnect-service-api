@@ -100,7 +100,7 @@ dependencies {
 
     // Acceptance tests
     acceptanceImplementation('org.springframework.boot:spring-boot-starter-test')
-    acceptanceImplementation 'com.h2database:h2:2.1.214'
+    acceptanceImplementation 'com.h2database:h2:2.2.220'
     acceptanceImplementation 'io.rest-assured:rest-assured'
     acceptanceImplementation 'io.cucumber:cucumber-java:7.12.1'
     acceptanceImplementation 'io.cucumber:cucumber-junit:7.12.1'
