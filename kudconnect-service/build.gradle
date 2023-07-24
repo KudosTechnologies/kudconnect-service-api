@@ -43,7 +43,6 @@ repositories {
 }
 
 java {
-    withSourcesJar()
     toolchain {
         languageVersion = JavaLanguageVersion.of(javaVersion)
     }
@@ -126,7 +125,6 @@ processTestResources {
 processAcceptanceResources {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
-tasks.named("sourcesJar") { duplicatesStrategy = 'include' }
 test {
     useJUnitPlatform()
     description = "Runs all unit tests definied via JUnit."
