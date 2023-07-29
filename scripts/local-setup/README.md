@@ -3,12 +3,14 @@
 ### Build Project
 
 - Publish api specification in maven local repository
+
 ```bash
 cd kudconnect-service-api
 ./gradlew publishToMavenLocal
 ```
 
 - Build Service
+
 ```bash
 cd kudconnect-service
 ./gradlew clean build 
@@ -17,25 +19,37 @@ cd kudconnect-service
 ## Set Environment variables
 
 ### Environment variables
+
 To add the environment variables to your `~/.bash_profile` or `~/.zshrc file`, you can use a text editor, or just append them from the command line.
 
 For instance, for Bash:
+
 ```bash
 echo 'export POSTGRES_USER="myuser"' >> ~/.bash_profile
 echo 'export POSTGRES_PASSWORD="mypassword"' >> ~/.bash_profile
 ```
 
 For Zsh:
+
 ```bash
 echo 'export POSTGRES_USER="kudconnect"' >> ~/.zshrc
 echo 'export POSTGRES_PASSWORD="ctdkucoonn"' >> ~/.zshrc
 ```
 
+Linux:
+
+If you have any issues with running the app via IntelliJ from a .zsh env please follow the instructions here for **Ubuntu** systems
+
+- [IntelliJ not picking up environment variables when using ZSH? - Stack Overflow](https://stackoverflow.com/questions/61469797/intellij-not-picking-up-environment-variables-when-using-zsh)
+- for **Manjaro** use the same instructions but with the following command:
+  - `bin/zsh -l -i -c /usr/bin/idea %f`
+
 ## Start External Services
 
 Our Service need following services:
+
 - Postgress Database
-- Keycloak 
+- Keycloak
 
 For local environment we manage these services with Docker & Docker Compose.
 
@@ -43,8 +57,10 @@ For local environment we manage these services with Docker & Docker Compose.
 docker-compose -f scripts/local-setup/docker-compose.yml up -d
 ```
 
-Keycloak Admin Console can be accessed with this [link](http://127.0.0.1:9080).
+Keycloak Admin Console can be accessed with this [link](http://127.0.0.1:9080). Login: user: admin | pass: admin
+
 Keycloak will pre-load `kudconnect` realm with following details:
+
 - clientId: kudconnect-client
 - roles: ["admin", "user"]
 - users: ["globaladmin", "user1", "user2"] (all of them has password: `Parola1234-`)
@@ -59,6 +75,3 @@ curl --location 'http://localhost:9080/realms/kudconnect/protocol/openid-connect
 --data-urlencode 'username=user2' \
 --data-urlencode 'password=Parola1234-
 ```
-
-
-
