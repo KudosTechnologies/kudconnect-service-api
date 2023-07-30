@@ -10,7 +10,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     ports:
-      - 5432:5432
+      - "5432:5432"
 
   keycloak:
     image: quay.io/keycloak/keycloak:22.0
@@ -27,8 +27,13 @@ services:
     # If you want to expose these ports outside your dev PC,
     # remove the "127.0.0.1:" prefix
     ports:
-      - 127.0.0.1:9080:9080
-      - 127.0.0.1:9443:9443
+      - "127.0.0.1:9080:9080"
+      - "127.0.0.1:9443:9443"
+
+  kudos-website:
+    image: kudos-website
+    ports:
+      - "127.0.0.1:80:80"
 
 volumes:
   postgres_data:

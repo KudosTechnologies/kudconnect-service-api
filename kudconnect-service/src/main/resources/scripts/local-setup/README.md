@@ -53,11 +53,18 @@ Our Service need following services:
 - Postgress Database
 - Keycloak
 
-For local environment we manage these services with Docker & Docker Compose.
+For local environment we manage these services with Docker & Docker Compose. For this we added the following plugin:
 
-```bash
-docker-compose -f scripts/local-setup/docker-compose.yml up -d
-```
+* [docker-compose-plugin](https://plugins.gradle.org/plugin/com.palantir.docker-compose)
+
+To start the application you need to run the Gradle **bootRun** task which will run the **docker-compose** plugin bringing
+the required containers up:
+
+![bootRun](../../images/boot-run.png)
+
+In order to **debug** the application you need to create a **Remote JVM Debug** configuration like this:
+
+![localDebug](../../images/local-debug.png)
 
 Keycloak Admin Console can be accessed with this [link](http://127.0.0.1:9080): login:admin | pass:admin
 Keycloak will pre-load `kudconnect` realm with following details:
