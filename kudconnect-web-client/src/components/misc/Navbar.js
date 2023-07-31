@@ -37,14 +37,8 @@ const getUsername = () => {
   return (
     <Menu stackable>
       <Container>
-        <Menu.Item header>Movies UI</Menu.Item>
+        <Menu.Item header>Kudconnect</Menu.Item>
         <Menu.Item as={NavLink} exact to="/home">Home</Menu.Item>
-        <Dropdown item text='Admin' style={getAdminMenuStyle()}>
-          <Dropdown.Menu>
-            <Dropdown.Item as={NavLink} exact to="/movies" onClick={checkAuthenticated}>Movies</Dropdown.Item>
-            <Dropdown.Item as={NavLink} exact to="/wizard" onClick={checkAuthenticated}>Movie Wizard</Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
         <Menu.Menu position='right'>
           {keycloak.authenticated &&
             <Dropdown text={`Hi ${getUsername()}`} pointing className='link item'>

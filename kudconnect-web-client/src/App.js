@@ -6,12 +6,16 @@ import { Dimmer, Header, Icon } from 'semantic-ui-react'
 import { config } from './Constants';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Navbar from './components/misc/Navbar';
+import PrivateRoute from './components/misc/PrivateRoute';
+import Home from './components/home/Home';
+import UserSettings from './components/settings/UserSettings';
+import { useState } from 'react';
 
 
 function App() {
   const keycloak = new Keycloak(
     {
-      url: 'http://localhost:9080',
+      url: config.url.KEYCLOAK_BASE_URL,
       realm: 'kudconnect',
       clientId: 'kudconnect-client'
     }
@@ -48,7 +52,9 @@ function App() {
       <Router>
         <Navbar />
         <Switch>
-          {/* <Route exact path="/" component={Home} /> */}
+          <Route path='/' exact component={Home} />
+          <Route path='/home' component={Home} />
+          <PrivateRoute path='/settings' component={UserSettings} />
         </Switch>
       </Router>
     </ReactKeycloakProvider>
