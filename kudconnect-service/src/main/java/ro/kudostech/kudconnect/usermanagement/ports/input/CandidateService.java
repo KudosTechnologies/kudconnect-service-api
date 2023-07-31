@@ -1,9 +1,8 @@
 package ro.kudostech.kudconnect.usermanagement.ports.input;
 
+import java.util.List;
 import ro.kudostech.kudconnect.api.server.model.Candidate;
 import ro.kudostech.kudconnect.api.server.model.PatchOperationCandidate;
-
-import java.util.List;
 
 public interface CandidateService {
     Candidate getCandidateById(String userId);

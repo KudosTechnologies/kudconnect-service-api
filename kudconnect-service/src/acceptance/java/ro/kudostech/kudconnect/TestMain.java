@@ -7,10 +7,6 @@ import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.OctetSequenceKey;
-
-import java.util.Base64;
-import javax.crypto.spec.SecretKeySpec;
-import javax.crypto.KeyGenerator;
 import java.security.NoSuchAlgorithmException;
 
 public class TestMain {

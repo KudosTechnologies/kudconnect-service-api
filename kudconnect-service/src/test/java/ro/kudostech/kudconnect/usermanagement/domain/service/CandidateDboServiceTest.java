@@ -17,9 +17,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ro.kudostech.kudconnect.api.server.model.Candidate;
+import ro.kudostech.kudconnect.usermanagement.adapters.output.persistence.CandidateRepository;
 import ro.kudostech.kudconnect.usermanagement.adapters.output.persistence.model.CandidateDbo;
 import ro.kudostech.kudconnect.usermanagement.domain.mapper.CandidateMapper;
-import ro.kudostech.kudconnect.usermanagement.adapters.output.persistence.CandidateRepository;
 import ro.kudostech.kudconnect.usermanagement.ports.output.eventpublisher.CandidateEventPublisher;
 
 @ExtendWith(MockitoExtension.class)

@@ -1,9 +1,9 @@
 package ro.kudostech.kudconnect.step;
 
+import java.io.IOException;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.*;
 
-import java.io.IOException;
 public class AuthorizationInterceptor implements ClientHttpRequestInterceptor {
 
     private String bearerToken;

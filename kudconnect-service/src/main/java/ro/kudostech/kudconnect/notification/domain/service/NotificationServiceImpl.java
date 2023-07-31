@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.modulith.ApplicationModuleListener;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import ro.kudostech.kudconnect.notification.ports.input.NotificationService;
 import ro.kudostech.kudconnect.common.event.CandidateCdc;
+import ro.kudostech.kudconnect.notification.ports.input.NotificationService;
 
 @Slf4j
 @Service

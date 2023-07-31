@@ -16,9 +16,9 @@ import ro.kudostech.kudconnect.api.server.model.Candidate;
 import ro.kudostech.kudconnect.api.server.model.PatchOperationCandidate;
 import ro.kudostech.kudconnect.common.event.CandidateCdc;
 import ro.kudostech.kudconnect.common.exception.PropertyPathProvider;
-import ro.kudostech.kudconnect.usermanagement.domain.mapper.CandidateMapper;
-import ro.kudostech.kudconnect.usermanagement.adapters.output.persistence.model.CandidateDbo;
 import ro.kudostech.kudconnect.usermanagement.adapters.output.persistence.CandidateRepository;
+import ro.kudostech.kudconnect.usermanagement.adapters.output.persistence.model.CandidateDbo;
+import ro.kudostech.kudconnect.usermanagement.domain.mapper.CandidateMapper;
 import ro.kudostech.kudconnect.usermanagement.ports.input.CandidateService;
 import ro.kudostech.kudconnect.usermanagement.ports.output.eventpublisher.CandidateEventPublisher;
 

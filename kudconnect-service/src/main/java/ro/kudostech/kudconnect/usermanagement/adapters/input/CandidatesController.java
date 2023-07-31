@@ -1,5 +1,8 @@
 package ro.kudostech.kudconnect.usermanagement.adapters.input;
 
+import java.net.URI;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
@@ -11,11 +14,6 @@ import ro.kudostech.kudconnect.api.server.model.Candidate;
 import ro.kudostech.kudconnect.api.server.model.PatchOperationCandidate;
 import ro.kudostech.kudconnect.api.server.model.ResourceUUID;
 import ro.kudostech.kudconnect.usermanagement.ports.input.CandidateService;
-
-
-import java.net.URI;
-import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,7 +39,7 @@ public class CandidatesController implements CandidatesApi {
   }
 
   @Override
-  @PreAuthorize("hasRole('user')")
+//  @PreAuthorize("hasRole('user')")
   public ResponseEntity<Candidate> getCandidateById(@NonNull UUID candidateId) {
     Candidate candidate = candidateService.getCandidateById(candidateId.toString());
     return ResponseEntity.ok(candidate);
