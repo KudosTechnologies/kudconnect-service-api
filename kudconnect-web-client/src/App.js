@@ -17,7 +17,7 @@ function App() {
     {
       url: config.url.KEYCLOAK_BASE_URL,
       realm: 'kudconnect',
-      clientId: 'kudconnect-client'
+      clientId: 'kudconnect-webapp'
     }
   )
 

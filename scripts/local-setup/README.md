@@ -45,9 +45,11 @@ docker-compose -f scripts/local-setup/docker-compose.yml up -d
 
 Keycloak Admin Console can be accessed with this [link](http://127.0.0.1:9080).
 Keycloak will pre-load `kudconnect` realm with following details:
-- clientId: kudconnect-client
+- clientId: kudconnect-webapp
 - roles: ["admin", "user"]
-- users: ["globaladmin", "user1", "user2"] (all of them has password: `Parola1234-`)
+- users:
+  - username: admin, password: admin
+  - username: user password: user
 
 Example request for obtaining a token:
 
@@ -55,9 +57,9 @@ Example request for obtaining a token:
 curl --location 'http://localhost:9080/realms/kudconnect/protocol/openid-connect/token' \
 --header 'Content-Type: application/x-www-form-urlencoded' \
 --data-urlencode 'grant_type=password' \
---data-urlencode 'client_id=kudconnect-client' \
---data-urlencode 'username=user2' \
---data-urlencode 'password=Parola1234-
+--data-urlencode 'client_id=kudconnect-webapp' \
+--data-urlencode 'username=admin' \
+--data-urlencode 'password=admin
 ```
 
 
