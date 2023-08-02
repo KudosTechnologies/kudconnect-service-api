@@ -16,7 +16,7 @@ import ro.kudostech.kudconnect.configuration.WireMockConfigurations;
 
 public final class TokenUtils {
   public static final String KEYCLOAK_REALM = "kudconnect";
-  public static final String JWT_RESOURCE_ID = "kudconnect-client";
+  public static final String JWT_RESOURCE_ID = "kudconnect-webapp";
   public static final String ROLE_USER = "user";
   public static final String ROLE_ADMIN = "admin";
 

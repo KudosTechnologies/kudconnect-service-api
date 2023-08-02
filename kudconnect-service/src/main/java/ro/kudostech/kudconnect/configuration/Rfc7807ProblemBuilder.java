@@ -1,15 +1,14 @@
 package ro.kudostech.kudconnect.configuration;
 
+import java.net.URI;
+import java.time.OffsetDateTime;
+import java.util.List;
 import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.WebRequest;
 import ro.kudostech.kudconnect.api.server.model.RFC7807Problem;
 import ro.kudostech.kudconnect.api.server.model.Violation;
-
-import java.net.URI;
-import java.time.OffsetDateTime;
-import java.util.List;
 
 @UtilityClass
 public class Rfc7807ProblemBuilder {
