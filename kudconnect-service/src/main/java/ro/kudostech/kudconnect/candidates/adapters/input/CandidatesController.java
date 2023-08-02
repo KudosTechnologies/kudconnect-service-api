@@ -1,4 +1,4 @@
-package ro.kudostech.kudconnect.usermanagement.adapters.input;
+package ro.kudostech.kudconnect.candidates.adapters.input;
 
 import java.net.URI;
 import java.util.List;
@@ -13,7 +13,7 @@ import ro.kudostech.kudconnect.api.server.CandidatesApi;
 import ro.kudostech.kudconnect.api.server.model.Candidate;
 import ro.kudostech.kudconnect.api.server.model.PatchOperationCandidate;
 import ro.kudostech.kudconnect.api.server.model.ResourceUUID;
-import ro.kudostech.kudconnect.usermanagement.ports.input.CandidateService;
+import ro.kudostech.kudconnect.candidates.ports.input.CandidateService;
 
 @RestController
 @RequiredArgsConstructor

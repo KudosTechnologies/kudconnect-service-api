@@ -1,4 +1,4 @@
-package ro.kudostech.kudconnect.usermanagement.domain.service;
+package ro.kudostech.kudconnect.candidates.domain.service;
 
 import static java.util.Map.entry;
 import static ro.kudostech.kudconnect.api.server.model.PatchOperationCandidate.PathEnum.FIRSTNAME;
@@ -14,9 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ro.kudostech.kudconnect.api.server.model.PatchOperation;
 import ro.kudostech.kudconnect.api.server.model.PatchOperationCandidate;
+import ro.kudostech.kudconnect.candidates.adapters.output.persistence.model.CandidateDbo;
 import ro.kudostech.kudconnect.common.exception.ConstraintViolationHelper;
 import ro.kudostech.kudconnect.common.exception.IllegalPatchArgumentException;
-import ro.kudostech.kudconnect.usermanagement.adapters.output.persistence.model.CandidateDbo;
 
 @Slf4j
 @Service

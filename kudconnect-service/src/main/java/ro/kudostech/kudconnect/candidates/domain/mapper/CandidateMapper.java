@@ -1,10 +1,11 @@
-package ro.kudostech.kudconnect.usermanagement.domain.mapper;
+package ro.kudostech.kudconnect.candidates.domain.mapper;
 
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import ro.kudostech.kudconnect.api.server.model.Candidate;
-import ro.kudostech.kudconnect.usermanagement.adapters.output.persistence.model.CandidateDbo;
+import ro.kudostech.kudconnect.candidates.adapters.output.persistence.model.CandidateDbo;
+import ro.kudostech.kudconnect.common.CommonMapper;
 
 @Mapper(
     componentModel = "spring",

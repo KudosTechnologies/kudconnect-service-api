@@ -1,4 +1,4 @@
-package ro.kudostech.kudconnect.usermanagement.ports.input;
+package ro.kudostech.kudconnect.candidates.ports.input;
 
 import java.util.List;
 import ro.kudostech.kudconnect.api.server.model.Candidate;

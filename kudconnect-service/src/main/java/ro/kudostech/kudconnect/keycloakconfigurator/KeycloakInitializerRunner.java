@@ -2,19 +2,24 @@ package ro.kudostech.kudconnect.keycloakconfigurator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.ProtocolMapperRepresentation;
 import org.keycloak.representations.idm.RealmRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import ro.kudostech.kudconnect.usermanagement.adapters.output.persistence.UserDetailsRepository;
+import ro.kudostech.kudconnect.usermanagement.adapters.output.persistence.model.UserDetailsDbo;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,14 +30,30 @@ public class KeycloakInitializerRunner implements CommandLineRunner {
   private static final String REALM_NAME = "kudconnect";
   private static final String CLIENT_ID = "kudconnect-webapp";
   private static final String REDIRECT_URL = "http://localhost:3000/*";
+  private static final String USER_ID_CLAIM = "user_id";
   private static final List<UserPass> USER_LIST =
-      Arrays.asList(new UserPass("admin", "admin"), new UserPass("user", "user"));
+      Arrays.asList(
+          new UserPass("admin", "admin", "admin@test.com"),
+          new UserPass("user", "user", "user@hpm.com"));
   private static final String ROLE_USER = "user";
   private static final String ROLE_ADMIN = "admin";
 
-  private record UserPass(String username, String password) {}
+  @Data
+  static class UserPass {
+    private String id;
+    private String username;
+    private String password;
+    private String email;
+
+    public UserPass(String username, String password, String email) {
+      this.username = username;
+      this.password = password;
+      this.email = email;
+    }
+  }
 
   private final Keycloak keycloakAdmin;
+  private final UserDetailsRepository userDetailsRepository;
 
   @Override
   public void run(String... args) {
@@ -52,6 +73,21 @@ public class KeycloakInitializerRunner implements CommandLineRunner {
     realmRepresentation.setRealm(REALM_NAME);
     realmRepresentation.setEnabled(true);
     realmRepresentation.setRegistrationAllowed(true);
+    realmRepresentation.setLoginWithEmailAllowed(true);
+    realmRepresentation.setRegistrationEmailAsUsername(true);
+
+    // Configure aditional claims
+    ProtocolMapperRepresentation mapper = new ProtocolMapperRepresentation();
+    mapper.setName("organizationId");
+    mapper.setProtocol("openid-connect");
+    mapper.setProtocolMapper("oidc-usermodel-attribute-mapper");
+
+    Map<String, String> config = new HashMap<>();
+    config.put("user.attribute", USER_ID_CLAIM);
+    config.put("access.token.claim", "true");
+    config.put("claim.name", USER_ID_CLAIM);
+    config.put("jsonType.label", "String");
+    mapper.setConfig(config);
 
     // Client
     ClientRepresentation clientRepresentation = new ClientRepresentation();
@@ -60,9 +96,11 @@ public class KeycloakInitializerRunner implements CommandLineRunner {
     clientRepresentation.setPublicClient(true);
     clientRepresentation.setRedirectUris(List.of(REDIRECT_URL));
     clientRepresentation.setDefaultRoles(new String[] {ROLE_USER});
+    clientRepresentation.setProtocolMappers(List.of(mapper));
     realmRepresentation.setClients(List.of(clientRepresentation));
 
     // Users
+    addUserDetails();
     List<UserRepresentation> userRepresentations =
         USER_LIST.stream()
             .map(
@@ -71,14 +109,17 @@ public class KeycloakInitializerRunner implements CommandLineRunner {
                   CredentialRepresentation credentialRepresentation =
                       new CredentialRepresentation();
                   credentialRepresentation.setType(CredentialRepresentation.PASSWORD);
-                  credentialRepresentation.setValue(userPass.password());
+                  credentialRepresentation.setValue(userPass.getPassword());
 
                   // User
                   UserRepresentation userRepresentation = new UserRepresentation();
-                  userRepresentation.setUsername(userPass.username());
+                  userRepresentation.setUsername(userPass.getUsername());
+                  userRepresentation.setEmail(userPass.getEmail());
                   userRepresentation.setEnabled(true);
                   userRepresentation.setCredentials(List.of(credentialRepresentation));
                   userRepresentation.setClientRoles(getClientRoles(userPass));
+                  userRepresentation.setAttributes(
+                      Map.of(USER_ID_CLAIM, List.of(userPass.getId())));
 
                   return userRepresentation;
                 })
@@ -90,20 +131,20 @@ public class KeycloakInitializerRunner implements CommandLineRunner {
 
     // Testing
     UserPass admin = USER_LIST.get(0);
-    log.info("Testing getting token for '{}' ...", admin.username());
+    log.info("Testing getting token for '{}' ...", admin.getUsername());
 
     Keycloak keycloakMovieApp =
         KeycloakBuilder.builder()
             .serverUrl(KEYCLOAK_SERVER_URL)
             .realm(REALM_NAME)
-            .username(admin.username())
-            .password(admin.password())
+            .username(admin.getUsername())
+            .password(admin.getPassword())
             .clientId(CLIENT_ID)
             .build();
 
     log.info(
         "'{}' token: {}",
-        admin.username(),
+        admin.getUsername(),
         keycloakMovieApp.tokenManager().grantToken().getToken());
     log.info("'{}' initialization completed successfully!", REALM_NAME);
   }
@@ -111,9 +152,18 @@ public class KeycloakInitializerRunner implements CommandLineRunner {
   private Map<String, List<String>> getClientRoles(UserPass userPass) {
     List<String> roles = new ArrayList<>();
     roles.add(ROLE_USER);
-    if ("admin".equals(userPass.username())) {
+    if ("admin".equals(userPass.getUsername())) {
       roles.add(ROLE_ADMIN);
     }
     return Map.of(CLIENT_ID, roles);
+  }
+
+  private void addUserDetails() {
+    USER_LIST.forEach(
+        userPass -> {
+          var userDetails = UserDetailsDbo.builder().email(userPass.getEmail()).build();
+          userDetailsRepository.save(userDetails);
+          userPass.setId(userDetails.getId());
+        });
   }
 }

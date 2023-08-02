@@ -1,10 +1,10 @@
-package ro.kudostech.kudconnect.usermanagement.adapters.output.eventpublisher;
+package ro.kudostech.kudconnect.candidates.adapters.output.eventpublisher;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
+import ro.kudostech.kudconnect.candidates.ports.output.eventpublisher.CandidateEventPublisher;
 import ro.kudostech.kudconnect.common.event.CandidateCdc;
-import ro.kudostech.kudconnect.usermanagement.ports.output.eventpublisher.CandidateEventPublisher;
 
 @Component
 @RequiredArgsConstructor

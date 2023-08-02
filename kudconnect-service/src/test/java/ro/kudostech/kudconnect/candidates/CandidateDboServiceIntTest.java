@@ -1,4 +1,4 @@
-package ro.kudostech.kudconnect.usermanagement;
+package ro.kudostech.kudconnect.candidates;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.times;
@@ -11,10 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.modulith.test.ApplicationModuleTest;
 import ro.kudostech.kudconnect.api.server.model.Candidate;
-import ro.kudostech.kudconnect.usermanagement.adapters.output.persistence.CandidateRepository;
-import ro.kudostech.kudconnect.usermanagement.adapters.output.persistence.model.CandidateDbo;
-import ro.kudostech.kudconnect.usermanagement.domain.mapper.CandidateMapper;
-import ro.kudostech.kudconnect.usermanagement.domain.service.CandidatesServiceImpl;
+import ro.kudostech.kudconnect.candidates.adapters.output.persistence.CandidateRepository;
+import ro.kudostech.kudconnect.candidates.adapters.output.persistence.model.CandidateDbo;
+import ro.kudostech.kudconnect.candidates.domain.mapper.CandidateMapper;
+import ro.kudostech.kudconnect.candidates.domain.service.CandidatesServiceImpl;
 
 /**
  * This class is an example of how to use @ApplicationModuleTest annotation that comes with spring-modulith.

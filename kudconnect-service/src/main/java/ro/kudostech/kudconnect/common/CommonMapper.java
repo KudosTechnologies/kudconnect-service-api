@@ -1,4 +1,4 @@
-package ro.kudostech.kudconnect.usermanagement.domain.mapper;
+package ro.kudostech.kudconnect.common;
 
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
@@ -10,12 +10,12 @@ import org.mapstruct.Named;
 public abstract class CommonMapper {
 
   @Named("stringToUUID")
-  UUID stringToUUID(String id) {
+  public UUID stringToUUID(String id) {
     return id == null ? null : UUID.fromString(id);
   }
 
   @Named("UUIDToString")
-  String uuidToString(UUID id) {
+  public String uuidToString(UUID id) {
     return id == null ? null : id.toString();
   }
 }

@@ -1,4 +1,4 @@
-package ro.kudostech.kudconnect.usermanagement.ports.output.eventpublisher;
+package ro.kudostech.kudconnect.candidates.ports.output.eventpublisher;
 
 import ro.kudostech.kudconnect.common.event.CandidateCdc;
 

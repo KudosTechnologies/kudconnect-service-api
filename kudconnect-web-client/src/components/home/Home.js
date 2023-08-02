@@ -1,10 +1,14 @@
-
+import { useKeycloak } from "@react-keycloak/web";
+import { getUsername } from '../misc/Helpers';
+import { Container, Header } from 'semantic-ui-react';
 
 const Home = () => {
+    const { keycloak } = useKeycloak();
+
     return (
-        <div>
-            <h1>Home</h1>
-        </div>
+        <Container>
+            <Header>Welcome Home {getUsername(keycloak)} </Header>
+        </Container>
     )
 }
 
