@@ -97,6 +97,8 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     testRuntimeOnly 'org.junit.vintage:junit-vintage-engine'
     testImplementation('org.springframework.boot:spring-boot-starter-test')
+    testImplementation 'com.h2database:h2:2.2.220'
+
 
     // Acceptance tests
     acceptanceImplementation('org.springframework.boot:spring-boot-starter-test')

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.modulith.test.ApplicationModuleTest;
+import org.springframework.test.context.ActiveProfiles;
 import ro.kudostech.kudconnect.api.server.model.Candidate;
 import ro.kudostech.kudconnect.candidates.adapters.output.persistence.CandidateRepository;
 import ro.kudostech.kudconnect.candidates.adapters.output.persistence.model.CandidateDbo;

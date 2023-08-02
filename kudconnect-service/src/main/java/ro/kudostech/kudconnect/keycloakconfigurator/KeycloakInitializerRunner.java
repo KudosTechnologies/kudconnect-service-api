@@ -17,6 +17,7 @@ import org.keycloak.representations.idm.ProtocolMapperRepresentation;
 import org.keycloak.representations.idm.RealmRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import ro.kudostech.kudconnect.api.server.model.UserDetails;
 import ro.kudostech.kudconnect.usermanagement.ports.input.UserManagementService;
@@ -24,6 +25,7 @@ import ro.kudostech.kudconnect.usermanagement.ports.input.UserManagementService;
 @Slf4j
 @RequiredArgsConstructor
 @Component
+@Profile("!acceptancetest")
 public class KeycloakInitializerRunner implements CommandLineRunner {
 
   private static final String KEYCLOAK_SERVER_URL = "http://localhost:9080";
