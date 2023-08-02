@@ -11,7 +11,7 @@ import { Container, Form, Segment, Button, Divider, Grid } from 'semantic-ui-rea
 
 const UserSettings = () => {
 
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [avatar, setAvatar] = useState('');
     const [originalAvatar, setOriginalAvatar] = useState('');
     const [imageLoading, setImageLoading] = useState(false);
@@ -23,8 +23,8 @@ const UserSettings = () => {
         const fetchData = async () => {
           try {
             const response = await kudconnectApi.getUserDetails(keycloak.token);
-            const { username, avatar } = response.data;
-            setUsername(username);
+            const { email, avatar } = response.data;
+            setEmail(email);
             setAvatar(avatar);
             setOriginalAvatar(avatar);
           } catch (error) {
@@ -36,8 +36,10 @@ const UserSettings = () => {
 
     const handleSuffle = () => {
         setImageLoading(true);
-        const avatar = username + Math.floor(Math.random() * 1000) + 1;
+        console.log(email);
+        const avatar = email + Math.floor(Math.random() * 1000) + 1;
         setAvatar(avatar);
+        console.log(avatar);
     };
 
     const handleImageLoad = () => {

@@ -10,6 +10,34 @@ servers:
   - url: https://api-url.com/v1
 
 paths:
+  /user/me:
+    get:
+      summary: Get current logged in user
+      operationId: getCurrentUser
+      tags:
+        - UserDetails
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetails'
+    put:
+        summary: Update current logged in user details
+        operationId: updateCurrentUser
+        tags:
+            - UserDetails
+        requestBody:
+            description: User object that needs to be updated
+            content:
+              application/json:
+                  schema:
+                    $ref: '#/components/schemas/UpdateUserDetailsRequest'
+            required: true
+        responses:
+            '200':
+              description: Successful operation
   /candidates:
     get:
       summary: Lists all candidates
@@ -104,6 +132,47 @@ components:
         type: string
         format: uuid
   schemas:
+    UserDetails:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        avatar:
+          type: string
+          description: The id of avatar
+    UpdateUserDetailsRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        avatar:
+          type: string
+          description: The id of avatar
+    RegisterUserRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        avatar:
+          type: string
+          description: The id of avatar
     Candidate:
       type: object
       properties:

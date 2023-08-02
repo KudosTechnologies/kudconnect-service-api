@@ -18,8 +18,8 @@ import org.keycloak.representations.idm.RealmRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import ro.kudostech.kudconnect.usermanagement.adapters.output.persistence.UserDetailsRepository;
-import ro.kudostech.kudconnect.usermanagement.adapters.output.persistence.model.UserDetailsDbo;
+import ro.kudostech.kudconnect.api.server.model.UserDetails;
+import ro.kudostech.kudconnect.usermanagement.ports.input.UserManagementService;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -51,7 +51,7 @@ public class KeycloakInitializerRunner implements CommandLineRunner {
   }
 
   private final Keycloak keycloakAdmin;
-  private final UserDetailsRepository userDetailsRepository;
+  private final UserManagementService userManagementService;
 
   @Override
   public void run(String... args) {
@@ -159,9 +159,9 @@ public class KeycloakInitializerRunner implements CommandLineRunner {
   private void addUserDetails() {
     USER_LIST.forEach(
         userPass -> {
-          var userDetails = UserDetailsDbo.builder().email(userPass.getEmail()).build();
-          userDetailsRepository.save(userDetails);
-          userPass.setId(userDetails.getId());
+          UserDetails userDetails = new UserDetails().email(userPass.getEmail());
+          var persistedUserDetails = userManagementService.addUserDetails(userDetails);
+          userPass.setId(persistedUserDetails.getId().toString());
         });
   }
 }

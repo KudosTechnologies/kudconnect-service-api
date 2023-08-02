@@ -3,9 +3,9 @@ package ro.kudostech.kudconnect.usermanagement.domain.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ro.kudostech.kudconnect.usermanagement.adapters.input.dto.RegisterUserRequest;
-import ro.kudostech.kudconnect.usermanagement.adapters.input.dto.UpdateUserDetailsRequest;
-import ro.kudostech.kudconnect.usermanagement.adapters.input.dto.UserDetails;
+import ro.kudostech.kudconnect.api.server.model.RegisterUserRequest;
+import ro.kudostech.kudconnect.api.server.model.UpdateUserDetailsRequest;
+import ro.kudostech.kudconnect.api.server.model.UserDetails;
 import ro.kudostech.kudconnect.usermanagement.adapters.output.persistence.UserDetailsRepository;
 import ro.kudostech.kudconnect.usermanagement.adapters.output.persistence.model.UserDetailsDbo;
 import ro.kudostech.kudconnect.usermanagement.domain.mapper.UserDetailsMapper;
@@ -44,5 +44,13 @@ public class UserManagementServiceImpl implements UserManagementService {
     userDetailsDbo.setAvatar(userDetails.getAvatar());
     userDetailsRepository.save(userDetailsDbo);
 
+  }
+
+  @Override
+  @Transactional
+  public UserDetails addUserDetails(UserDetails userDetails) {
+    UserDetailsDbo userDetailsDbo = userDetailsMapper.toUserDetailsDbo(userDetails);
+    UserDetailsDbo savedUserDetailsDbo = userDetailsRepository.save(userDetailsDbo);
+    return userDetailsMapper.toUserDetails(savedUserDetailsDbo);
   }
 }

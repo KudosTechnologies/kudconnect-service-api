@@ -1,8 +1,9 @@
 package ro.kudostech.kudconnect.usermanagement.ports.input;
 
-import ro.kudostech.kudconnect.usermanagement.adapters.input.dto.RegisterUserRequest;
-import ro.kudostech.kudconnect.usermanagement.adapters.input.dto.UpdateUserDetailsRequest;
-import ro.kudostech.kudconnect.usermanagement.adapters.input.dto.UserDetails;
+
+import ro.kudostech.kudconnect.api.server.model.RegisterUserRequest;
+import ro.kudostech.kudconnect.api.server.model.UpdateUserDetailsRequest;
+import ro.kudostech.kudconnect.api.server.model.UserDetails;
 
 public interface UserManagementService {
 
@@ -11,5 +12,7 @@ public interface UserManagementService {
     void registerUser(RegisterUserRequest registerUserRequest);
 
     void updateUserDetails(String userId, UpdateUserDetailsRequest userDetails);
+
+    UserDetails addUserDetails(UserDetails userDetails);
 
 }
