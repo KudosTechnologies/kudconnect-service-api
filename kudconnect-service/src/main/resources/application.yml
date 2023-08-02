@@ -23,7 +23,7 @@ spring:
 jwt:
   auth:
     converter:
-      resource-id: kudconnect-client
+      resource-id: kudconnect-webapp
       principle-attribute: preferred_username
 
 logging:
