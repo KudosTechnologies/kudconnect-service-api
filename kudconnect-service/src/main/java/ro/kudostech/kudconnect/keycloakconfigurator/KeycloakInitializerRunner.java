@@ -33,20 +33,18 @@ public class KeycloakInitializerRunner implements CommandLineRunner {
   private static final String USER_ID_CLAIM = "user_id";
   private static final List<UserPass> USER_LIST =
       Arrays.asList(
-          new UserPass("admin", "admin", "admin@test.com"),
-          new UserPass("user", "user", "user@hpm.com"));
+          new UserPass("admin@test.com", "admin" ),
+          new UserPass("user@test.com", "user"));
   private static final String ROLE_USER = "user";
   private static final String ROLE_ADMIN = "admin";
 
   @Data
   static class UserPass {
     private String id;
-    private String username;
     private String password;
     private String email;
 
-    public UserPass(String username, String password, String email) {
-      this.username = username;
+    public UserPass(String email, String password) {
       this.password = password;
       this.email = email;
     }
@@ -113,7 +111,7 @@ public class KeycloakInitializerRunner implements CommandLineRunner {
 
                   // User
                   UserRepresentation userRepresentation = new UserRepresentation();
-                  userRepresentation.setUsername(userPass.getUsername());
+                  userRepresentation.setUsername(userPass.getEmail());
                   userRepresentation.setEmail(userPass.getEmail());
                   userRepresentation.setEnabled(true);
                   userRepresentation.setCredentials(List.of(credentialRepresentation));
@@ -131,20 +129,20 @@ public class KeycloakInitializerRunner implements CommandLineRunner {
 
     // Testing
     UserPass admin = USER_LIST.get(0);
-    log.info("Testing getting token for '{}' ...", admin.getUsername());
+    log.info("Testing getting token for '{}' ...", admin.getEmail());
 
     Keycloak keycloakMovieApp =
         KeycloakBuilder.builder()
             .serverUrl(KEYCLOAK_SERVER_URL)
             .realm(REALM_NAME)
-            .username(admin.getUsername())
+            .username(admin.getEmail())
             .password(admin.getPassword())
             .clientId(CLIENT_ID)
             .build();
 
     log.info(
         "'{}' token: {}",
-        admin.getUsername(),
+        admin.getEmail(),
         keycloakMovieApp.tokenManager().grantToken().getToken());
     log.info("'{}' initialization completed successfully!", REALM_NAME);
   }
@@ -152,7 +150,7 @@ public class KeycloakInitializerRunner implements CommandLineRunner {
   private Map<String, List<String>> getClientRoles(UserPass userPass) {
     List<String> roles = new ArrayList<>();
     roles.add(ROLE_USER);
-    if ("admin".equals(userPass.getUsername())) {
+    if ("admin".equals(userPass.getEmail())) {
       roles.add(ROLE_ADMIN);
     }
     return Map.of(CLIENT_ID, roles);
