@@ -53,7 +53,7 @@ public class KeycloakInitializerRunner implements CommandLineRunner {
   }
 
   private final Keycloak keycloakAdmin;
-  private final UserManagementService userManagementService;
+//  private final UserManagementService userManagementService;
 
   @Override
   public void run(String... args) {
@@ -78,9 +78,10 @@ public class KeycloakInitializerRunner implements CommandLineRunner {
 
     // Configure aditional claims
     ProtocolMapperRepresentation mapper = new ProtocolMapperRepresentation();
-    mapper.setName("organizationId");
+    mapper.setName("additional-claims-mapper");
     mapper.setProtocol("openid-connect");
-    mapper.setProtocolMapper("oidc-usermodel-attribute-mapper");
+//    mapper.setProtocolMapper("oidc-usermodel-attribute-mapper");
+    mapper.setProtocolMapper("custom-protocol-mapper");
 
     Map<String, String> config = new HashMap<>();
     config.put("user.attribute", USER_ID_CLAIM);
@@ -97,10 +98,21 @@ public class KeycloakInitializerRunner implements CommandLineRunner {
     clientRepresentation.setRedirectUris(List.of(REDIRECT_URL));
     clientRepresentation.setDefaultRoles(new String[] {ROLE_USER});
     clientRepresentation.setProtocolMappers(List.of(mapper));
-    realmRepresentation.setClients(List.of(clientRepresentation));
+
+    // Confidential client for internal app communication
+    ClientRepresentation confidentialClientRepresentation = new ClientRepresentation();
+    confidentialClientRepresentation.setClientId("keycloak-client");
+    confidentialClientRepresentation.setSecret("keycloak-dummy-secret"); // set a secret here
+    confidentialClientRepresentation.setServiceAccountsEnabled(true);
+    confidentialClientRepresentation.setDirectAccessGrantsEnabled(true);
+    confidentialClientRepresentation.setPublicClient(false); // it is not a public client
+    confidentialClientRepresentation.setRedirectUris(List.of(REDIRECT_URL));
+
+
+    realmRepresentation.setClients(List.of(clientRepresentation, confidentialClientRepresentation));
 
     // Users
-    addUserDetails();
+//    addUserDetails();
     List<UserRepresentation> userRepresentations =
         USER_LIST.stream()
             .map(
@@ -118,8 +130,8 @@ public class KeycloakInitializerRunner implements CommandLineRunner {
                   userRepresentation.setEnabled(true);
                   userRepresentation.setCredentials(List.of(credentialRepresentation));
                   userRepresentation.setClientRoles(getClientRoles(userPass));
-                  userRepresentation.setAttributes(
-                      Map.of(USER_ID_CLAIM, List.of(userPass.getId())));
+//                  userRepresentation.setAttributes(
+//                      Map.of(USER_ID_CLAIM, List.of(userPass.getId())));
 
                   return userRepresentation;
                 })
@@ -130,23 +142,23 @@ public class KeycloakInitializerRunner implements CommandLineRunner {
     keycloakAdmin.realms().create(realmRepresentation);
 
     // Testing
-    UserPass admin = USER_LIST.get(0);
-    log.info("Testing getting token for '{}' ...", admin.getEmail());
-
-    Keycloak keycloakMovieApp =
-        KeycloakBuilder.builder()
-            .serverUrl(KEYCLOAK_SERVER_URL)
-            .realm(REALM_NAME)
-            .username(admin.getEmail())
-            .password(admin.getPassword())
-            .clientId(CLIENT_ID)
-            .build();
-
-    log.info(
-        "'{}' token: {}",
-        admin.getEmail(),
-        keycloakMovieApp.tokenManager().grantToken().getToken());
-    log.info("'{}' initialization completed successfully!", REALM_NAME);
+//    UserPass admin = USER_LIST.get(0);
+//    log.info("Testing getting token for '{}' ...", admin.getEmail());
+//
+//    Keycloak kudconnectwebapp =
+//        KeycloakBuilder.builder()
+//            .serverUrl(KEYCLOAK_SERVER_URL)
+//            .realm(REALM_NAME)
+//            .username(admin.getEmail())
+//            .password(admin.getPassword())
+//            .clientId(CLIENT_ID)
+//            .build();
+//
+//    log.info(
+//        "'{}' token: {}",
+//        admin.getEmail(),
+//        kudconnectwebapp.tokenManager().grantToken().getToken());
+//    log.info("'{}' initialization completed successfully!", REALM_NAME);
   }
 
   private Map<String, List<String>> getClientRoles(UserPass userPass) {
@@ -158,12 +170,12 @@ public class KeycloakInitializerRunner implements CommandLineRunner {
     return Map.of(CLIENT_ID, roles);
   }
 
-  private void addUserDetails() {
-    USER_LIST.forEach(
-        userPass -> {
-          UserDetails userDetails = new UserDetails().email(userPass.getEmail());
-          var persistedUserDetails = userManagementService.addUserDetails(userDetails);
-          userPass.setId(persistedUserDetails.getId().toString());
-        });
-  }
+//  private void addUserDetails() {
+//    USER_LIST.forEach(
+//        userPass -> {
+//          UserDetails userDetails = new UserDetails().email(userPass.getEmail());
+//          var persistedUserDetails = userManagementService.addUserDetails(userDetails);
+//          userPass.setId(persistedUserDetails.getId().toString());
+//        });
+//  }
 }

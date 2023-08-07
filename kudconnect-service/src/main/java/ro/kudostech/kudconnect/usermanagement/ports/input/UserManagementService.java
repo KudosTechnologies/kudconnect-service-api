@@ -1,6 +1,7 @@
 package ro.kudostech.kudconnect.usermanagement.ports.input;
 
 
+import jakarta.transaction.Transactional;
 import ro.kudostech.kudconnect.api.server.model.RegisterUserRequest;
 import ro.kudostech.kudconnect.api.server.model.UpdateUserDetailsRequest;
 import ro.kudostech.kudconnect.api.server.model.UserDetails;
@@ -9,7 +10,10 @@ public interface UserManagementService {
 
     UserDetails getUserDetails(String userId);
 
-    void registerUser(RegisterUserRequest registerUserRequest);
+    @Transactional
+    UserDetails getOrCreateUserDetails(String email);
+
+    UserDetails registerUser(RegisterUserRequest registerUserRequest);
 
     void updateUserDetails(String userId, UpdateUserDetailsRequest userDetails);
 

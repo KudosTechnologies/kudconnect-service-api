@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import ro.kudostech.kudconnect.api.server.UserDetailsApi;
 import ro.kudostech.kudconnect.api.server.model.UserDetails;
@@ -33,4 +35,11 @@ public class UserManagementController implements UserDetailsApi {
     userManagementService.updateUserDetails(userId, updateUserDetailsRequest);
     return ResponseEntity.ok().build();
   }
+
+  @GetMapping("/user-details/{email}")
+  public ResponseEntity<UserDetails> getOrRegisterUserDetails(@PathVariable String email) {
+    UserDetails userDetails = userManagementService.getOrCreateUserDetails(email);
+    return ResponseEntity.ok(userDetails);
+  }
+
 }

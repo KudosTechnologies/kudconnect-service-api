@@ -2,6 +2,8 @@ package ro.kudostech.kudconnect.usermanagement.domain.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import ro.kudostech.kudconnect.api.server.model.RegisterUserRequest;
 import ro.kudostech.kudconnect.api.server.model.UpdateUserDetailsRequest;
@@ -11,6 +13,8 @@ import ro.kudostech.kudconnect.usermanagement.adapters.output.persistence.model.
 import ro.kudostech.kudconnect.usermanagement.domain.mapper.UserDetailsMapper;
 import ro.kudostech.kudconnect.usermanagement.ports.input.UserManagementService;
 
+import java.security.Principal;
+
 @Service
 @RequiredArgsConstructor
 public class UserManagementServiceImpl implements UserManagementService {
@@ -18,17 +22,32 @@ public class UserManagementServiceImpl implements UserManagementService {
   private final UserDetailsRepository userDetailsRepository;
   private final UserDetailsMapper userDetailsMapper;
 
+    @Override
+    public UserDetails getUserDetails(String userId) {
+      return userDetailsRepository
+          .findById(userId)
+          .map(userDetailsMapper::toUserDetails)
+          .orElseThrow(
+              () -> new RuntimeException("UserDetails not found for user with id " + userId));
+    }
+
   @Override
-  public UserDetails getUserDetails(String userId) {
+  @Transactional
+  public UserDetails getOrCreateUserDetails(String email) {
     return userDetailsRepository
-        .findById(userId)
+        .findByEmail(email)
         .map(userDetailsMapper::toUserDetails)
-        .orElseThrow(
-            () -> new RuntimeException("UserDetails not found for user with id " + userId));
+        .orElseGet(
+            () -> registerUser(new RegisterUserRequest().email(email)));
   }
 
   @Override
-  public void registerUser(RegisterUserRequest registerUserRequest) {}
+  @Transactional
+  public UserDetails registerUser(RegisterUserRequest registerUserRequest) {
+    UserDetailsDbo userDetailsDbo = userDetailsMapper.toUserDetailsDbo(registerUserRequest);
+    UserDetailsDbo savedUserDetailsDbo = userDetailsRepository.save(userDetailsDbo);
+    return userDetailsMapper.toUserDetails(savedUserDetailsDbo);
+  }
 
   @Override
   @Transactional
@@ -38,12 +57,11 @@ public class UserManagementServiceImpl implements UserManagementService {
             .findById(userId)
             .orElseThrow(
                 () -> new RuntimeException("UserDetails not found for user with id " + userId));
-//    userDetailsDbo.setFirstName(userDetails.getFirstName());
-//    userDetailsDbo.setLastName(userDetails.getLastName());
-//    userDetailsDbo.setEmail(userDetails.getEmail());
+    //    userDetailsDbo.setFirstName(userDetails.getFirstName());
+    //    userDetailsDbo.setLastName(userDetails.getLastName());
+    //    userDetailsDbo.setEmail(userDetails.getEmail());
     userDetailsDbo.setAvatar(userDetails.getAvatar());
     userDetailsRepository.save(userDetailsDbo);
-
   }
 
   @Override
