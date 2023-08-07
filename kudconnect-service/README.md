@@ -115,4 +115,3 @@ curl --location 'http://keycloak:9080/realms/kudconnect/protocol/openid-connect/
 --data-urlencode 'username=user2' \
 --data-urlencode 'password=Parola1234-
 ```
-
