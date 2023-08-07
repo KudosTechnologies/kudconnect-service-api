@@ -121,7 +121,6 @@ curl --location 'http://keycloak:9080/realms/kudconnect/protocol/openid-connect/
 --data-urlencode 'password=Parola1234-
 ```
 
-
 ## Start Web Client 
 
 ```bash
