@@ -24,16 +24,30 @@ services:
       - KC_FEATURES=scripts
       - KC_HTTP_PORT=9080
       - KC_HTTPS_PORT=9443
-    # If you want to expose these ports outside your dev PC,
-    # remove the "127.0.0.1:" prefix
     ports:
-      - "127.0.0.1:9080:9080"
-      - "127.0.0.1:9443:9443"
+      - "9080:9080"
+      - "9443:9443"
 
-  kudos-website:
-    image: kudos-website
+  kudconnect-service:
+    build:
+      context: ../../
+      dockerfile: Dockerfile
+    image: kudconnect-service
+    depends_on:
+      db:
+        condition: service_started
+      keycloak:
+        condition: service_started
+    environment:
+      JAVA_OPTS: '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005'
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/kudconnect
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI: http://keycloak:9080/realms/kudconnect
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: http://keycloak:9080/realms/kudconnect/protocol/openid-connect/certs
     ports:
-      - "127.0.0.1:80:80"
+      - "8080:8080"
+      - "5005:5005"
 
 volumes:
   postgres_data:

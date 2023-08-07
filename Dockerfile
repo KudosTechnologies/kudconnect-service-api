@@ -1,46 +1,41 @@
 FROM maven:3.9.2-eclipse-temurin-17-alpine as maven_builder
-
-WORKDIR /kudconnect-service-api
-
 # Copy the Gradle wrapper files into the container
-COPY gradlew .
-COPY gradle gradle
+COPY kudconnect-service-api/gradlew .
+COPY kudconnect-service-api/gradle gradle
 
 # Copy the Gradle build files into the container
-COPY build.gradle .
-COPY settings.gradle .
+COPY kudconnect-service-api/build.gradle .
+COPY kudconnect-service-api/settings.gradle .
 
 # Copy apiDef
-COPY spec spec
-# Copy the source code and resources into the container
-COPY src src
+COPY kudconnect-service-api/spec spec
 
-RUN ./gradlew build
+# Build and publish the api JAR
+RUN ./gradlew clean build
 RUN ./gradlew publishToMavenLocal
 
-# Set the working directory inside the container
-WORKDIR /kudconnect-service
-
 # Copy the Gradle wrapper files into the container
-COPY gradlew .
-COPY gradle gradle
+COPY kudconnect-service/gradlew .
+COPY kudconnect-service/gradle gradle
 
 # Copy the Gradle build files into the container
-COPY build.gradle .
-COPY gradle.properties .
-COPY settings.gradle .
+COPY kudconnect-service/build.gradle .
+COPY kudconnect-service/gradle.properties .
+COPY kudconnect-service/settings.gradle .
 
 # Copy the source code and resources into the container
-COPY src src
+COPY kudconnect-service/src src
 
 # Build the application with Gradle
-RUN ./gradlew build -x test
+RUN ./gradlew clean build -x test
 
 FROM eclipse-temurin:17.0.7_7-jdk-alpine
 
-COPY --from=maven_builder /kudconnect-service/build/kudconnect-service-1.0.0-SNAPSHOT.jar kudconnect-service.jar
+# Install cURL
+RUN apk --no-cache add curl
+
 # Copy the Spring Boot application JAR into the container
-#COPY build/libs/kudconnect-service-1.0.0-SNAPSHOT.jar kudconnect-service.jar
+COPY --from=maven_builder /build/libs/kudconnect-service-1.0.0-SNAPSHOT.jar kudconnect-service.jar
 
 EXPOSE 8080
 EXPOSE 5005
