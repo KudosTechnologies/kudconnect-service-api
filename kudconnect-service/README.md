@@ -133,3 +133,15 @@ npm start
 - Web Client will redirect to Keycloak login page. You can login with `admin@test.com` and password `admin`.
 ![login-screenshot.png](..%2F..%2Fkudconnect-service%2Fdiagrams%2Flogin-screenshot.png)
 
+
+If you run the app inside Docker you will have to enter the terminal of the container and run the curl below to obtain the access token:
+
+```bash
+curl --location 'http://keycloak:9080/realms/kudconnect/protocol/openid-connect/token' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'grant_type=password' \
+--data-urlencode 'client_id=kudconnect-client' \
+--data-urlencode 'username=user2' \
+--data-urlencode 'password=Parola1234-
+```
+

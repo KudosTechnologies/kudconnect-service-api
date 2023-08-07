@@ -19,7 +19,7 @@ To get started, simply clone this repository and follow the setup instructions. 
 
 Remember, the purpose of this project is to serve as a guideline and starting point. Feel free to modify it according to the needs of your own project and team. Happy coding!
 
-### [Local Setup](kudconnect-service/src/main/resources/scripts/local-setup/README.md)
+### [Local Setup](kudconnect-service/README.md)
 
 
 
