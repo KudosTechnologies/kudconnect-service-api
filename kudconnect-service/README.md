@@ -96,7 +96,7 @@ Keycloak will pre-load `kudconnect` realm with following details:
 - users:
   - username: admin@test.com, password: admin
   - username: user@test.com, password: user
-  - 
+
 Example request for obtaining a token from outside the Docker container:
 
 ```bash
@@ -118,6 +118,7 @@ curl --location 'http://keycloak:9080/realms/kudconnect/protocol/openid-connect/
 --data-urlencode 'username=user2' \
 --data-urlencode 'password=Parola1234-
 ```
+
 
 ## Start Web Client 
 
