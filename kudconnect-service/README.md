@@ -89,20 +89,23 @@ docker-compose build --no-cache && docker-compose up -d --force-recreate
 
 Keycloak Admin Console can be accessed with this [link](http://127.0.0.1:9080): login:admin | pass:admin
 Keycloak will pre-load `kudconnect` realm with following details:
+- clientId: kudconnect-webapp
 
 - clientId: kudconnect-client
 - roles: ["admin", "user"]
-- users: ["globaladmin", "user1", "user2"] (all of them has password: `Parola1234-`)
-
+- users:
+  - username: admin@test.com, password: admin
+  - username: user@test.com, password: user
+  - 
 Example request for obtaining a token from outside the Docker container:
 
 ```bash
 curl --location 'http://localhost:9080/realms/kudconnect/protocol/openid-connect/token' \
 --header 'Content-Type: application/x-www-form-urlencoded' \
 --data-urlencode 'grant_type=password' \
---data-urlencode 'client_id=kudconnect-client' \
---data-urlencode 'username=user2' \
---data-urlencode 'password=Parola1234-
+--data-urlencode 'client_id=kudconnect-webapp' \
+--data-urlencode 'username=admin@test.com' \
+--data-urlencode 'password=admin
 ```
 
 If you run the app inside Docker you will have to enter the terminal of the container and run the curl below to obtain the access token:
@@ -115,3 +118,17 @@ curl --location 'http://keycloak:9080/realms/kudconnect/protocol/openid-connect/
 --data-urlencode 'username=user2' \
 --data-urlencode 'password=Parola1234-
 ```
+
+## Start Web Client 
+
+```bash
+cd kudconnect-webapp
+npm install
+npm start
+```
+
+- Web Client can be accessed with this [link](http://localhost:3000).
+![home-page-screenshot.png](..%2F..%2Fkudconnect-service%2Fdiagrams%2Fhome-page-screenshot.png)
+- Web Client will redirect to Keycloak login page. You can login with `admin@test.com` and password `admin`.
+![login-screenshot.png](..%2F..%2Fkudconnect-service%2Fdiagrams%2Flogin-screenshot.png)
+
