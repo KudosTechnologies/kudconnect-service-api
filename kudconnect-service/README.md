@@ -54,7 +54,6 @@ Our Service need following services:
 - Keycloak
 
 For local environment we manage these services with Docker & Docker Compose. For this we added the following plugin:
-<<<<<<<< HEAD:kudconnect-service/README.md
 
 * [docker-compose-plugin](https://plugins.gradle.org/plugin/com.palantir.docker-compose)
 
@@ -87,17 +86,6 @@ If you make code changes and want to rebuild the app you have to redeploy the Do
 ```bash
 docker-compose build --no-cache && docker-compose up -d --force-recreate
 ```
-========
-
-* [docker-compose-plugin](https://plugins.gradle.org/plugin/com.palantir.docker-compose)
-
-To start the application you need to run the Gradle **bootRun** task which will run the **docker-compose** plugin bringing
-the required containers up:
-
-![bootRun](../../images/boot-run.png)
-
-In order to **debug** the application you need to create a **Remote JVM Debug** configuration like this:
-
 ![localDebug](../../images/local-debug.png)
 >>>>>>>> 9f85a33 (Added local setup using docker-compose plugin):kudconnect-service/src/main/resources/scripts/local-setup/README.md
 
@@ -132,4 +120,18 @@ curl --location 'http://keycloak:9080/realms/kudconnect/protocol/openid-connect/
 --data-urlencode 'username=user2' \
 --data-urlencode 'password=Parola1234-
 ```
+
+
+## Start Web Client 
+
+```bash
+cd kudconnect-webapp
+npm install
+npm start
+```
+
+- Web Client can be accessed with this [link](http://localhost:3000).
+![home-page-screenshot.png](..%2F..%2Fkudconnect-service%2Fdiagrams%2Fhome-page-screenshot.png)
+- Web Client will redirect to Keycloak login page. You can login with `admin@test.com` and password `admin`.
+![login-screenshot.png](..%2F..%2Fkudconnect-service%2Fdiagrams%2Flogin-screenshot.png)
 
