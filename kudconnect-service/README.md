@@ -108,20 +108,6 @@ curl --location 'http://localhost:9080/realms/kudconnect/protocol/openid-connect
 --data-urlencode 'password=admin
 ```
 
-## Start Web Client 
-
-```bash
-cd kudconnect-webapp
-npm install
-npm start
-```
-
-- Web Client can be accessed with this [link](http://localhost:3000).
-![home-page-screenshot.png](..%2F..%2Fkudconnect-service%2Fdiagrams%2Fhome-page-screenshot.png)
-- Web Client will redirect to Keycloak login page. You can login with `admin@test.com` and password `admin`.
-![login-screenshot.png](..%2F..%2Fkudconnect-service%2Fdiagrams%2Flogin-screenshot.png)
-
-
 If you run the app inside Docker you will have to enter the terminal of the container and run the curl below to obtain the access token:
 
 ```bash
