@@ -2,8 +2,6 @@ package ro.kudostech.kudconnect.usermanagement.domain.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import ro.kudostech.kudconnect.api.server.model.RegisterUserRequest;
 import ro.kudostech.kudconnect.api.server.model.UpdateUserDetailsRequest;
@@ -12,8 +10,6 @@ import ro.kudostech.kudconnect.usermanagement.adapters.output.persistence.UserDe
 import ro.kudostech.kudconnect.usermanagement.adapters.output.persistence.model.UserDetailsDbo;
 import ro.kudostech.kudconnect.usermanagement.domain.mapper.UserDetailsMapper;
 import ro.kudostech.kudconnect.usermanagement.ports.input.UserManagementService;
-
-import java.security.Principal;
 
 @Service
 @RequiredArgsConstructor

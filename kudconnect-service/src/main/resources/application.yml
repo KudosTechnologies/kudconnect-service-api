@@ -1,4 +1,4 @@
-  #management.tracing.enabled: true
+#management.tracing.enabled: true
 spring:
   security:
     oauth2:
