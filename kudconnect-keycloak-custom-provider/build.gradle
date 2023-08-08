@@ -1,0 +1,42 @@
+import org.gradle.api.JavaVersion
+
+plugins {
+    id("java")
+    id("java-library")
+}
+
+group = "ro.kudostech.kudconnect"
+version = "1.0-SNAPSHOT"
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    jar.archiveFileName = 'kudconnect-customizations.jar'
+}
+
+java {
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+dependencies {
+
+    implementation "org.keycloak:keycloak-core:${keycloakVersion}"
+    implementation "org.keycloak:keycloak-server-spi:${keycloakVersion}"
+    implementation "org.keycloak:keycloak-server-spi-private:${keycloakVersion}"
+    implementation ("org.keycloak:keycloak-services:${keycloakVersion}") {
+        exclude group: 'org.jboss.resteasy', module: 'resteasy-multipart-provider'
+    }
+    implementation "org.jboss.resteasy:resteasy-client:4.7.9.Final"
+    implementation "commons-logging:commons-logging:1.2"
+    implementation "org.jboss.resteasy:resteasy-jackson2-provider:4.7.9.Final"
+    compileOnly "org.projectlombok:lombok:1.18.20"
+    annotationProcessor "org.projectlombok:lombok:1.18.20"
+}
+
+tasks.test {
+    useJUnitPlatform()
+}
