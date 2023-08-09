@@ -2,77 +2,50 @@ package ro.kudostech.kudconnect;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.HttpHeaders;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jboss.logging.Logger;
-import org.jboss.resteasy.client.jaxrs.ResteasyClient;
-import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
 
 public class ExternalResourceClient {
 
   private static final Logger logger = Logger.getLogger(ExternalResourceClient.class);
 
-  private static final String kudconnectServiceBaseUrl =  System.getenv("KUDCONNECT_SERVER_URL");
+  private static final String KUDCONNECT_SERVER_URL = System.getenv("KUDCONNECT_SERVER_URL");
 
-  private final ResteasyClient resteasyClientKudconnectService;
+  public String fetchFreshToken() throws IOException, InterruptedException {
+    String url = "http://localhost:9080/realms/kudconnect/protocol/openid-connect/token";
 
-  private final ResteasyClient resteasyClient = newResteasyClient(10000);
+    String formParams =
+        String.join(
+            "&",
+            "grant_type=" + URLEncoder.encode("client_credentials", StandardCharsets.UTF_8),
+            "client_id=" + URLEncoder.encode("keycloak-client", StandardCharsets.UTF_8),
+            "client_secret=" + URLEncoder.encode("keycloak-dummy-secret", StandardCharsets.UTF_8));
 
-  public ExternalResourceClient() {
-    this(newResteasyClient(1000));
-  }
+    HttpClient client = HttpClient.newHttpClient();
+    HttpRequest request =
+        HttpRequest.newBuilder()
+            .uri(URI.create(url))
+            .header("Content-Type", "application/x-www-form-urlencoded")
+            .POST(HttpRequest.BodyPublishers.ofString(formParams))
+            .build();
 
-  ExternalResourceClient(ResteasyClient resteasyClientKudconnectService) {
-    this.resteasyClientKudconnectService = resteasyClientKudconnectService;
-  }
+    HttpResponse<String> response;
+    response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-  private static ResteasyClient newResteasyClient(final int readTimeout) {
-    return new ResteasyClientBuilderImpl()
-        .connectTimeout(1000, TimeUnit.MILLISECONDS)
-        .readTimeout(readTimeout, TimeUnit.MILLISECONDS)
-        .build();
-  }
+    // Assuming that the response body contains a JSON object with an "access_token" field
+    // Using a JSON library like Jackson or Gson to extract the access token would be more robust
 
-  public Optional<String> fetchUserIdFromKudconnectServiceInternal(String email) {
-    try {
-      String keycloakAccessToken = fetchFreshToken();
-      UserResponse userResponse =
-          resteasyClientKudconnectService
-              .target(kudconnectServiceBaseUrl + "/user-details/" + email)
-              .request()
-              .header(HttpHeaders.AUTHORIZATION, "Bearer " + keycloakAccessToken)
-              .get(UserResponse.class);
-      String userId = userResponse.getId();
-
-      return Optional.ofNullable(userId);
-    } catch (Exception exception) {
-      logger.error("Error while fetching user id from kudconnect service", exception);
-      return Optional.empty();
-    }
-  }
-
-  public String fetchFreshToken() {
-    return doTokenRequest(
-            "http://localhost:9080/realms/kudconnect/protocol/openid-connect/token",
-            new Form()
-                .param("grant_type", "client_credentials")
-                .param("client_id", "keycloak-client")
-                .param("client_secret", "keycloak-dummy-secret"))
-        .accessToken;
-  }
-
-  protected AccessTokenResponse doTokenRequest(String uri, Form form) {
-    return resteasyClient
-        .target(uri)
-        .request()
-        .post(Entity.form(form))
-        .readEntity(AccessTokenResponse.class);
+    return response.body().split("\"access_token\":\"")[1].split("\"")[0];
   }
 
   @Data
@@ -88,5 +61,24 @@ public class ExternalResourceClient {
   @JsonIgnoreProperties(ignoreUnknown = true)
   public static class UserResponse {
     private String id;
+  }
+
+  public Optional<String> fetchUserIdFromKudconnectServiceInternal(String email) {
+    try {
+      String token = fetchFreshToken();
+      HttpRequest request =
+          HttpRequest.newBuilder()
+              .uri(URI.create(KUDCONNECT_SERVER_URL + "/user-details/" + email))
+              .header("Authorization", "Bearer " + token)
+              .method("GET", HttpRequest.BodyPublishers.noBody())
+              .build();
+      HttpResponse<String> response =
+          java.net.http.HttpClient.newHttpClient()
+              .send(request, HttpResponse.BodyHandlers.ofString());
+      return Optional.of(response.body().split("\"id\":\"")[1].split("\"")[0]);
+    } catch (Exception e) {
+      logger.error("Error while fetching user id from kudconnect service", e);
+      return Optional.empty();
+    }
   }
 }

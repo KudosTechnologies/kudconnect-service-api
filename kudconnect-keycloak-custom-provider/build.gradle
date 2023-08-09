@@ -16,8 +16,8 @@ configurations {
 
 java {
     withSourcesJar()
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 dependencies {
@@ -28,9 +28,7 @@ dependencies {
     implementation ("org.keycloak:keycloak-services:${keycloakVersion}") {
         exclude group: 'org.jboss.resteasy', module: 'resteasy-multipart-provider'
     }
-    implementation "org.jboss.resteasy:resteasy-client:4.7.9.Final"
     implementation "commons-logging:commons-logging:1.2"
-    implementation "org.jboss.resteasy:resteasy-jackson2-provider:4.7.9.Final"
     compileOnly "org.projectlombok:lombok:1.18.20"
     annotationProcessor "org.projectlombok:lombok:1.18.20"
 }
