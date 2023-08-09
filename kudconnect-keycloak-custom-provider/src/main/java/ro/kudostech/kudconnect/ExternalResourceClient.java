@@ -39,13 +39,12 @@ public class ExternalResourceClient {
         .build();
   }
 
-  public Optional<String> fetchUserIdFromKudconnectServiceInternal() {
+  public Optional<String> fetchUserIdFromKudconnectServiceInternal(String email) {
     try {
       String keycloakAccessToken = fetchFreshToken();
-      logger.info("keycloakAccessToken: " + keycloakAccessToken);
       UserResponse userResponse =
           resteasyClientKudconnectService
-              .target(kudconnectServiceBaseUrl + "/user-details/admin@test.com")
+              .target(kudconnectServiceBaseUrl + "/user-details/" + email)
               .request()
               .header(HttpHeaders.AUTHORIZATION, "Bearer " + keycloakAccessToken)
               .get(UserResponse.class);

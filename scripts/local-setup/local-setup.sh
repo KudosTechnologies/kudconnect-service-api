@@ -1,9 +1,5 @@
 #!/bin/bash
 
-declare -A DOCKERFILE_PATHS
-DOCKERFILE_PATHS["kudconnect-keycloak"]="../KudconnectKeycloak.Dockerfile"
-
-
 function stop_service {
   local SERVICE_NAME=$1
   echo "Stopping service: $SERVICE_NAME..."
@@ -12,13 +8,16 @@ function stop_service {
 
 function build_image {
   local SERVICE_NAME=$1
-  local DOCKERFILE=${DOCKERFILE_PATHS[$SERVICE_NAME]}
-  if [ -z "$DOCKERFILE" ]; then
-    echo "Dockerfile path not found for service: $SERVICE_NAME"
-    exit 1
+  
+  if [ "$SERVICE_NAME" == "keycloak" ]; then
+      build_keycloak_image
   fi
+
   echo "Rebuilding image for service: $SERVICE_NAME..."
-  docker build -t $SERVICE_NAME -f $DOCKERFILE ../..
+}
+
+function build_keycloak_image() {
+    docker build -t kudconnect-keycloak:latest -f ../KudconnectKeycloak.Dockerfile ../..
 }
 
 function start_service {

@@ -56,8 +56,8 @@ public class CustomProtocolMapper extends AbstractOIDCProtocolMapper implements 
     protected void setClaim(IDToken token, ProtocolMapperModel mappingModel,
       UserSessionModel userSession, KeycloakSession keycloakSession,
       ClientSessionContext clientSessionCtx) {
-        String userId = externalResourceClient.fetchUserIdFromKudconnectServiceInternal().orElse(null);
-        logger.info(String.format("Setting custom claim %s with value %s", USER_ID_TOKEN_CLAIM_KEY, userId));
+        String userId = externalResourceClient.fetchUserIdFromKudconnectServiceInternal(userSession.getLoginUsername()).orElse(null);
+        logger.info(String.format("Setting custom claim %s with value %s for username %s", USER_ID_TOKEN_CLAIM_KEY, userId, userSession.getLoginUsername()));
         addClaim(USER_ID_TOKEN_CLAIM_KEY, userId, token);
 //        OIDCAttributeMapperHelper.mapClaim(token, mappingModel, "Baeldung");
     }

@@ -7,7 +7,7 @@ public class TestMain {
     ExternalResourceClient externalResourceClient = new ExternalResourceClient();
 //    String token = externalResourceClient.fetchFreshToken();
     Optional<String> userId =
-        externalResourceClient.fetchUserIdFromKudconnectServiceInternal();
+        externalResourceClient.fetchUserIdFromKudconnectServiceInternal("admin@test.com");
     System.out.println(userId.get());
   }
 }
