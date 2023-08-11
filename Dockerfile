@@ -1,4 +1,4 @@
-FROM maven:3.9.2-eclipse-temurin-17-alpine as maven_builder
+FROM maven:3.9.3-eclipse-temurin-17-alpine AS maven_builder
 # Copy the Gradle wrapper files into the container
 COPY kudconnect-service-api/gradlew .
 COPY kudconnect-service-api/gradle gradle
@@ -29,7 +29,7 @@ COPY kudconnect-service/src src
 # Build the application with Gradle
 RUN ./gradlew clean build -x test
 
-FROM eclipse-temurin:17.0.7_7-jdk-alpine
+FROM eclipse-temurin:17.0.8_7-jre-alpine
 
 # Install cURL
 RUN apk --no-cache add curl

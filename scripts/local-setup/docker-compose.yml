@@ -13,10 +13,8 @@ services:
       - "5432:5432"
 
   keycloak:
-    image: quay.io/keycloak/keycloak:22.0
+    image: quay.io/keycloak/keycloak:22.0.1
     command: ['start-dev']
-    volumes:
-      - ./realm-config:/opt/keycloak/data/import
     environment:
       - KC_DB=dev-file
       - KEYCLOAK_ADMIN=admin
@@ -38,14 +36,16 @@ services:
         condition: service_started
       keycloak:
         condition: service_started
+    extra_hosts:
+      - "kudconnect.local:172.17.0.1"
     environment:
       JAVA_OPTS: '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005'
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/kudconnect
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
-      KEYCLOAK_BASE_URL: http://keycloak:9080
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI: http://keycloak:9080/realms/kudconnect
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: http://keycloak:9080/realms/kudconnect/protocol/openid-connect/certs
+      KEYCLOAK_BASE_URL: http://kudconnect.local:9080
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI: http://kudconnect.local:9080/realms/kudconnect
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: http://kudconnect.local:9080/realms/kudconnect/protocol/openid-connect/certs
     ports:
       - "8080:8080"
       - "5005:5005"
@@ -60,9 +60,6 @@ services:
         condition: service_started
       kudconnect-service:
         condition: service_started
-    environment:
-      KEYCLOAK_BASE_URL: http://keycloak:9080
-      API_BASE_URL: http://kudconnect-service:8080
     ports:
       - "80:80"
 

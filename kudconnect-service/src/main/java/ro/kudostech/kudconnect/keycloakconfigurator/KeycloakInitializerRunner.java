@@ -34,7 +34,8 @@ public class KeycloakInitializerRunner implements CommandLineRunner {
 
   private static final String REALM_NAME = "kudconnect";
   private static final String CLIENT_ID = "kudconnect-webapp";
-  private static final String REDIRECT_URL = "http://localhost:3000/*";
+
+  private static final List<String> REDIRECT_URL_LIST = List.of("http://localhost:3000/*", "http://kudconnect.local/*");
   private static final String USER_ID_CLAIM = "user_id";
   private static final List<UserPass> USER_LIST =
       Arrays.asList(
@@ -97,7 +98,7 @@ public class KeycloakInitializerRunner implements CommandLineRunner {
     clientRepresentation.setClientId(CLIENT_ID);
     clientRepresentation.setDirectAccessGrantsEnabled(true);
     clientRepresentation.setPublicClient(true);
-    clientRepresentation.setRedirectUris(List.of(REDIRECT_URL));
+    clientRepresentation.setRedirectUris(REDIRECT_URL_LIST);
     clientRepresentation.setDefaultRoles(new String[] {ROLE_USER});
     clientRepresentation.setProtocolMappers(List.of(mapper));
     realmRepresentation.setClients(List.of(clientRepresentation));
