@@ -46,7 +46,7 @@ public class SecurityConfig {
 
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // React app's URL
+    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://kudconnect.local")); // React app's URL
     configuration.setAllowedMethods(Arrays.asList(HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(), HttpMethod.DELETE.name())); // Replace this with the HTTP methods you want to allow
     configuration.setAllowCredentials(true);
     configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
