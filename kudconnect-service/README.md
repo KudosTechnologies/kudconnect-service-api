@@ -64,6 +64,7 @@ To run the application you have two options:
 ```bash
 docker compose up db keycloak
 ```
+
 In this case you can debug it directly from your IDE.
 
 2. Running the application with the entire setup, all from Docker containers by simply running:
@@ -72,7 +73,8 @@ In this case you can debug it directly from your IDE.
 docker compose up
 ```
 
-To kill the containers only run: 
+To kill the containers only run:
+
 ```bash
 docker compose down
 ```
@@ -86,16 +88,17 @@ If you make code changes and want to rebuild the app you have to redeploy the Do
 ```bash
 docker-compose build --no-cache && docker-compose up -d --force-recreate
 ```
+
 ![localDebug](../../images/local-debug.png)
->>>>>>>> 9f85a33 (Added local setup using docker-compose plugin):kudconnect-service/src/main/resources/scripts/local-setup/README.md
 
 Keycloak Admin Console can be accessed with this [link](http://127.0.0.1:9080): login:admin | pass:admin
 Keycloak will pre-load `kudconnect` realm with following details:
-- clientId: kudconnect-webapp
 
+- clientId: kudconnect-webapp
 - clientId: kudconnect-client
 - roles: ["admin", "user"]
 - users:
+
   - username: admin@test.com, password: admin
   - username: user@test.com, password: user
 
@@ -121,8 +124,7 @@ curl --location 'http://keycloak:9080/realms/kudconnect/protocol/openid-connect/
 --data-urlencode 'password=Parola1234-
 ```
 
-
-## Start Web Client 
+## Start Web Client
 
 ```bash
 cd kudconnect-webapp
@@ -131,7 +133,6 @@ npm start
 ```
 
 - Web Client can be accessed with this [link](http://localhost:3000).
-![home-page-screenshot.png](..%2F..%2Fkudconnect-service%2Fdiagrams%2Fhome-page-screenshot.png)
+  ![home-page-screenshot.png](/diagrams/home-page-screenshot.png)
 - Web Client will redirect to Keycloak login page. You can login with `admin@test.com` and password `admin`.
-![login-screenshot.png](..%2F..%2Fkudconnect-service%2Fdiagrams%2Flogin-screenshot.png)
-
+  ![login-screenshot.png](/diagrams/login-screenshot.png)

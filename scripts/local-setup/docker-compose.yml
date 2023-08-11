@@ -43,11 +43,28 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/kudconnect
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      KEYCLOAK_BASE_URL: http://keycloak:9080
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI: http://keycloak:9080/realms/kudconnect
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: http://keycloak:9080/realms/kudconnect/protocol/openid-connect/certs
     ports:
       - "8080:8080"
       - "5005:5005"
+
+  kudconnect-web-client:
+    build:
+      context: ../../kudconnect-web-client
+      dockerfile: Dockerfile
+    image: kudconnect-web-client
+    depends_on:
+      keycloak:
+        condition: service_started
+      kudconnect-service:
+        condition: service_started
+    environment:
+      KEYCLOAK_BASE_URL: http://keycloak:9080
+      API_BASE_URL: http://kudconnect-service:8080
+    ports:
+      - "80:80"
 
 volumes:
   postgres_data:
