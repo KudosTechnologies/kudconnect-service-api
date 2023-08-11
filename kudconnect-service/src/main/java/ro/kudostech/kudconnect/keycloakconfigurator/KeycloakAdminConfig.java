@@ -2,16 +2,22 @@ package ro.kudostech.kudconnect.keycloakconfigurator;
 
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
+@Profile("!acceptancetest")
 public class KeycloakAdminConfig {
+
+    @Value("${keycloak.base-url}")
+    public String keycloakBaseUrl;
 
     @Bean
     public Keycloak keycloakAdmin() {
         return KeycloakBuilder.builder()
-                .serverUrl("http://localhost:9080")
+                .serverUrl(keycloakBaseUrl)
                 .realm("master")
                 .username("admin")
                 .password("admin")

@@ -16,6 +16,7 @@ import org.keycloak.representations.idm.IdentityProviderRepresentation;
 import org.keycloak.representations.idm.ProtocolMapperRepresentation;
 import org.keycloak.representations.idm.RealmRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -27,10 +28,13 @@ import org.springframework.util.CollectionUtils;
 @Profile("!acceptancetest")
 public class KeycloakInitializerRunner implements CommandLineRunner {
 
-  private static final String KEYCLOAK_SERVER_URL = "http://localhost:9080";
+  @Value("${keycloak.base-url}")
+  public String keycloakBaseUrl;
+
   private static final String REALM_NAME = "kudconnect";
   private static final String CLIENT_ID = "kudconnect-webapp";
-  private static final String REDIRECT_URL = "http://localhost:3000/*";
+
+  private static final List<String> REDIRECT_URL_LIST = List.of("http://localhost:3000/*", "http://kudconnect.local/*");
   private static final String USER_ID_CLAIM = "user_id";
   private static final List<UserPass> USER_LIST =
       Arrays.asList(new UserPass("admin@test.com", "admin"), new UserPass("user@test.com", "user"));
@@ -137,7 +141,7 @@ public class KeycloakInitializerRunner implements CommandLineRunner {
     clientRepresentation.setClientId(CLIENT_ID);
     clientRepresentation.setDirectAccessGrantsEnabled(true);
     clientRepresentation.setPublicClient(true);
-    clientRepresentation.setRedirectUris(List.of(REDIRECT_URL));
+    clientRepresentation.setRedirectUris(REDIRECT_URL_LIST);
     clientRepresentation.setDefaultRoles(new String[] {ROLE_USER});
     clientRepresentation.setProtocolMappers(List.of(mapper));
 
@@ -198,7 +202,7 @@ public class KeycloakInitializerRunner implements CommandLineRunner {
 
     Keycloak kudconnectwebapp =
         KeycloakBuilder.builder()
-            .serverUrl(KEYCLOAK_SERVER_URL)
+            .serverUrl(keycloakBaseUrl)
             .realm(REALM_NAME)
             .username(admin.email())
             .password(admin.password())
