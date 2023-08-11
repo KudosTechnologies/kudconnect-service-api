@@ -155,7 +155,7 @@ public class KeycloakInitializerRunner implements CommandLineRunner {
     confidentialClientRepresentation.setServiceAccountsEnabled(true);
     confidentialClientRepresentation.setDirectAccessGrantsEnabled(true);
     confidentialClientRepresentation.setPublicClient(false); // it is not a public client
-    confidentialClientRepresentation.setRedirectUris(List.of(REDIRECT_URL));
+    confidentialClientRepresentation.setRedirectUris(REDIRECT_URL_LIST);
 
     addClientToRealmRepresentation(realmRepresentation, confidentialClientRepresentation);
   }

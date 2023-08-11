@@ -1,7 +1,5 @@
 package ro.kudostech.kudconnect;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -10,19 +8,20 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.jboss.logging.Logger;
 
 public class ExternalResourceClient {
 
   private static final Logger logger = Logger.getLogger(ExternalResourceClient.class);
 
-  private static final String KUDCONNECT_SERVER_URL = System.getenv("KUDCONNECT_SERVER_URL");
+  private static final String KEYCLOAK_SERVER_URL =
+      Optional.ofNullable(System.getenv("KEYCLOAK_SERVER_URL")).orElse("http://localhost:9080");
+  private static final String KUDCONNECT_SERVER_URL =
+      Optional.ofNullable(System.getenv("KUDCONNECT_SERVER_URL")).orElse("http://localhost:8080");
 
   public String fetchFreshToken() throws IOException, InterruptedException {
-    String url = "http://localhost:9080/realms/kudconnect/protocol/openid-connect/token";
+    logger.info("Fetching fresh token from keycloak server: " + KEYCLOAK_SERVER_URL);
+    String url = KEYCLOAK_SERVER_URL + "/realms/kudconnect/protocol/openid-connect/token";
 
     String formParams =
         String.join(
@@ -44,28 +43,13 @@ public class ExternalResourceClient {
 
     // Assuming that the response body contains a JSON object with an "access_token" field
     // Using a JSON library like Jackson or Gson to extract the access token would be more robust
-
     return response.body().split("\"access_token\":\"")[1].split("\"")[0];
-  }
-
-  @Data
-  @JsonIgnoreProperties(ignoreUnknown = true)
-  @NoArgsConstructor
-  @AllArgsConstructor
-  public static class AccessTokenResponse {
-    @JsonAlias("access_token")
-    private String accessToken;
-  }
-
-  @Data
-  @JsonIgnoreProperties(ignoreUnknown = true)
-  public static class UserResponse {
-    private String id;
   }
 
   public Optional<String> fetchUserIdFromKudconnectServiceInternal(String email) {
     try {
       String token = fetchFreshToken();
+      logger.info("Fetching user id from kudconnect service: " + KUDCONNECT_SERVER_URL);
       HttpRequest request =
           HttpRequest.newBuilder()
               .uri(URI.create(KUDCONNECT_SERVER_URL + "/user-details/" + email))
@@ -75,9 +59,10 @@ public class ExternalResourceClient {
       HttpResponse<String> response =
           java.net.http.HttpClient.newHttpClient()
               .send(request, HttpResponse.BodyHandlers.ofString());
+      logger.info("Response from kudconnect service: " + response.statusCode());
       return Optional.of(response.body().split("\"id\":\"")[1].split("\"")[0]);
     } catch (Exception e) {
-      logger.error("Error while fetching user id from kudconnect service", e);
+      logger.error("Error while fetching user id from kudconnect service: " + e.getMessage(), e);
       return Optional.empty();
     }
   }
