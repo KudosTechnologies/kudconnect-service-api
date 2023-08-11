@@ -1,4 +1,4 @@
-FROM node:20.4-slim as react_builder
+FROM node:20.5-slim as react_builder
 
 # Copy package.json and package-lock.json first to leverage Docker's caching
 COPY package*.json ./
