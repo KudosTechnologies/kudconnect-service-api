@@ -13,11 +13,27 @@ function build_image {
       build_keycloak_image
   fi
 
+  if [ "$SERVICE_NAME" == "kudconnect-service" ]; then
+      build_kudconnect_service_image
+  fi
+
+    if [ "$SERVICE_NAME" == "kudconnect-web-client" ]; then
+        build_kudconnect-web-client_image
+    fi
+
   echo "Rebuilding image for service: $SERVICE_NAME..."
 }
 
 function build_keycloak_image() {
     docker build -t kudconnect-keycloak:latest -f ../KudconnectKeycloak.Dockerfile ../..
+}
+
+function build_kudconnect_service_image() {
+    docker build -t kudconnect-service:latest -f ../KudconnectService.Dockerfile ../..
+}
+
+function build_kudconnect-web-client_image() {
+    docker build -t kudconnect-web-client:latest -f ../KudconnectWebClient.Dockerfile ../..
 }
 
 function start_service {

@@ -7,9 +7,9 @@ spring:
           issuer-uri: ${keycloak.base-url}/realms/kudconnect
           jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
   datasource:
-    url: jdbc:postgresql://localhost:5432/kudconnect
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/kudconnect}
+    username: ${POSTGRES_USER:kudconnect}
+    password: ${POSTGRES_PASSWORD:ctdkucoonn}
     driver-class-name: org.postgresql.Driver
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect

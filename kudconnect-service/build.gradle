@@ -1,4 +1,5 @@
 import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+
 buildscript {
     repositories {
         mavenLocal()
@@ -11,14 +12,14 @@ buildscript {
 }
 plugins {
     id 'org.springframework.boot' version '3.1.2'
-    id 'io.spring.dependency-management' version '1.1.3'
+    id 'io.spring.dependency-management' version '1.1.2'
     id 'java'
     id 'jacoco'
     id 'com.palantir.docker-compose' version '0.35.0'
 }
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2022.0.4"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2022.0.3"
         mavenBom "org.springframework.modulith:spring-modulith-bom:1.0.0-SNAPSHOT"
 
     }
@@ -144,8 +145,7 @@ tasks.register('acceptanceTest', Test) {
     classpath = sourceSets.acceptance.runtimeClasspath
     finalizedBy "jacocoAcceptanceTestReport"
 }
-build.dependsOn(acceptanceTest)
-acceptanceTest.mustRunAfter(test)
+
 jacoco {
     toolVersion = "0.8.10"
 }
@@ -164,7 +164,6 @@ jacocoTestReport {
         html.required = true
     }
 }
-test.finalizedBy jacocoTestReport
 tasks.register('jacocoAcceptanceTestReport', JacocoReport) {
     description = "Generates jacoco code coverage report for acceptance test tasks."
     group = "reporting"
@@ -175,7 +174,6 @@ tasks.register('jacocoAcceptanceTestReport', JacocoReport) {
         html.required = true
     }
 }
-acceptanceTest.finalizedBy jacocoAcceptanceTestReport
 tasks.register('allTestReport', JacocoReport) {
     description = "Generates jacoco code coverage report for unit, integration und acceptance test tasks."
     group = "reporting"
@@ -215,8 +213,7 @@ tasks.register('buildJavaClient', GenerateTask) {
             useBeanValidation      : "true",
     ]
 }
-buildJavaClient.dependsOn copyOpenApiDef
-compileAcceptanceJava.dependsOn buildJavaClient
+
 
 tasks.register('buildJavaServer', GenerateTask) {
     group 'openapi tools'
@@ -253,30 +250,34 @@ tasks.register('buildJavaServer', GenerateTask) {
 
 }
 
+//tasks.register('openapiPackageInfoConfig') {
 tasks.register('openapiPackageInfoConfig') {
-    // Create package-info files for server package
-    def serverPackagePath = "${openApiServerDir}/src/main/java/ro/kudostech/kudconnect/api/server"
-    def serverPackageInfo = """
+    dependsOn 'buildJavaServer'
+    doLast {
+        // Create package-info files for server package
+        def serverPackagePath = "${openApiServerDir}/src/main/java/ro/kudostech/kudconnect/api/server"
+        def serverPackageInfo = """
     @org.springframework.modulith.NamedInterface("apiserver")
     package ro.kudostech.kudconnect.api.server;
     """
-    File extraFolder = new File( "${serverPackagePath}")
-    if( !extraFolder.exists() ) {
-        extraFolder.mkdirs()
-    }
-    new File("${serverPackagePath}/package-info.java").text = serverPackageInfo
+        File extraFolder = new File("${serverPackagePath}")
+        if (!extraFolder.exists()) {
+            extraFolder.mkdirs()
+        }
+        new File("${serverPackagePath}/package-info.java").text = serverPackageInfo
 
-    // Create package-info files for server model package
-    def modelPackagePath = "${openApiServerDir}/src/main/java/ro/kudostech/kudconnect/api/server/model"
-    def modelPackageInfo = """
+        // Create package-info files for server model package
+        def modelPackagePath = "${openApiServerDir}/src/main/java/ro/kudostech/kudconnect/api/server/model"
+        def modelPackageInfo = """
     @org.springframework.modulith.NamedInterface("apiservermodel")
     package ro.kudostech.kudconnect.api.server.model;
     """
-    extraFolder = new File( "${modelPackagePath}")
-    if( !extraFolder.exists() ) {
-        extraFolder.mkdirs()
+        extraFolder = new File("${modelPackagePath}")
+        if (!extraFolder.exists()) {
+            extraFolder.mkdirs()
+        }
+        new File("${modelPackagePath}/package-info.java").text = modelPackageInfo
     }
-    new File("${modelPackagePath}/package-info.java").text = modelPackageInfo
 }
 
 dockerCompose {
@@ -287,10 +288,17 @@ bootRun {
     jvmArgs=["-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"]
 }
 
-bootRun.dependsOn dockerComposeUp
-buildJavaServer.dependsOn copyOpenApiDef
+build.dependsOn(acceptanceTest)
 compileJava.dependsOn buildJavaServer
-openapiPackageInfoConfig.dependsOn buildJavaServer
+buildJavaServer.dependsOn copyOpenApiDef
+buildJavaServer.finalizedBy openapiPackageInfoConfig
+
+buildJavaClient.dependsOn copyOpenApiDef
+compileAcceptanceJava.dependsOn buildJavaClient
+acceptanceTest.mustRunAfter(test)
+acceptanceTest.finalizedBy jacocoAcceptanceTestReport
+
+test.finalizedBy jacocoTestReport
 
 
 
