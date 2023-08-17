@@ -1,20 +1,18 @@
 FROM node:20.5-slim as react_builder
 
-# Copy package.json and package-lock.json first to leverage Docker's caching
-COPY package*.json ./
+COPY kudconnect-web-client kudconnect-web-client
+WORKDIR kudconnect-web-client
 RUN npm install
 
-# Copy the rest of the app's source code
-COPY . .
-
 # Build the React app
+ENV NODE_ENV=development_local
 RUN npm run build
 
 # Stage 2: Create the Nginx server
 FROM nginx:alpine
 
 # Copy the built React app from the previous stage to Nginx's default directory
-COPY --from=react_builder /build /usr/share/nginx/html
+COPY --from=react_builder kudconnect-web-client/build /usr/share/nginx/html
 
 # Expose port 80 (default for Nginx)
 EXPOSE 80

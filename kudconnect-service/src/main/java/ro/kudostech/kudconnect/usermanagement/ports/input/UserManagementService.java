@@ -9,7 +9,9 @@ public interface UserManagementService {
 
     UserDetails getUserDetails(String userId);
 
-    void registerUser(RegisterUserRequest registerUserRequest);
+    UserDetails getOrCreateUserDetails(String email);
+
+    UserDetails registerUser(RegisterUserRequest registerUserRequest);
 
     void updateUserDetails(String userId, UpdateUserDetailsRequest userDetails);
 

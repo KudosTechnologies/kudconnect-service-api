@@ -18,17 +18,32 @@ public class UserManagementServiceImpl implements UserManagementService {
   private final UserDetailsRepository userDetailsRepository;
   private final UserDetailsMapper userDetailsMapper;
 
+    @Override
+    public UserDetails getUserDetails(String userId) {
+      return userDetailsRepository
+          .findById(userId)
+          .map(userDetailsMapper::toUserDetails)
+          .orElseThrow(
+              () -> new RuntimeException("UserDetails not found for user with id " + userId));
+    }
+
   @Override
-  public UserDetails getUserDetails(String userId) {
+  @Transactional
+  public UserDetails getOrCreateUserDetails(String email) {
     return userDetailsRepository
-        .findById(userId)
+        .findByEmail(email)
         .map(userDetailsMapper::toUserDetails)
-        .orElseThrow(
-            () -> new RuntimeException("UserDetails not found for user with id " + userId));
+        .orElseGet(
+            () -> registerUser(new RegisterUserRequest().email(email)));
   }
 
   @Override
-  public void registerUser(RegisterUserRequest registerUserRequest) {}
+  @Transactional
+  public UserDetails registerUser(RegisterUserRequest registerUserRequest) {
+    UserDetailsDbo userDetailsDbo = userDetailsMapper.toUserDetailsDbo(registerUserRequest);
+    UserDetailsDbo savedUserDetailsDbo = userDetailsRepository.save(userDetailsDbo);
+    return userDetailsMapper.toUserDetails(savedUserDetailsDbo);
+  }
 
   @Override
   @Transactional
@@ -38,12 +53,11 @@ public class UserManagementServiceImpl implements UserManagementService {
             .findById(userId)
             .orElseThrow(
                 () -> new RuntimeException("UserDetails not found for user with id " + userId));
-//    userDetailsDbo.setFirstName(userDetails.getFirstName());
-//    userDetailsDbo.setLastName(userDetails.getLastName());
-//    userDetailsDbo.setEmail(userDetails.getEmail());
+    //    userDetailsDbo.setFirstName(userDetails.getFirstName());
+    //    userDetailsDbo.setLastName(userDetails.getLastName());
+    //    userDetailsDbo.setEmail(userDetails.getEmail());
     userDetailsDbo.setAvatar(userDetails.getAvatar());
     userDetailsRepository.save(userDetailsDbo);
-
   }
 
   @Override
