@@ -2,7 +2,7 @@
 #RUN mkdir -p /mnt/rootfs
 #RUN dnf install --installroot /mnt/rootfs curl iputils nc vi --releasever 9 --setopt install_weak_deps=false --nodocs -y; dnf --installroot /mnt/rootfs clean all
 
-FROM maven:3.9.3-eclipse-temurin-17-alpine as build
+FROM maven:3.9.4-eclipse-temurin-17-alpine as build
 WORKDIR kudconnect-keycloak-custom-provider
 COPY kudconnect-keycloak-custom-provider .
 RUN ./gradlew --refresh-dependencies assemble
