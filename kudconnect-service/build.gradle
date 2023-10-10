@@ -117,7 +117,7 @@ dependencies {
     acceptanceImplementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.2.1'
     acceptanceImplementation group: 'org.bitbucket.b_c', name: 'jose4j', version: '0.9.3'
 
-    acceptanceImplementation group: 'com.github.tomakehurst', name: 'wiremock-jre8-standalone', version: '2.35.0'
+    acceptanceImplementation group: 'com.github.tomakehurst', name: 'wiremock-jre8-standalone', version: '2.35.1'
 
 
 }
