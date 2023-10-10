@@ -99,12 +99,12 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     testRuntimeOnly 'org.junit.vintage:junit-vintage-engine'
     testImplementation('org.springframework.boot:spring-boot-starter-test')
-    testImplementation 'com.h2database:h2:2.2.220'
+    testImplementation 'com.h2database:h2:2.2.224'
 
 
     // Acceptance tests
     acceptanceImplementation('org.springframework.boot:spring-boot-starter-test')
-    acceptanceImplementation 'com.h2database:h2:2.2.220'
+    acceptanceImplementation 'com.h2database:h2:2.2.224'
     acceptanceImplementation 'io.rest-assured:rest-assured'
     acceptanceImplementation 'io.cucumber:cucumber-java:7.13.0'
     acceptanceImplementation 'io.cucumber:cucumber-junit:7.13.0'
