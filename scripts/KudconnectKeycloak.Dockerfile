@@ -7,7 +7,7 @@ WORKDIR kudconnect-keycloak-custom-provider
 COPY kudconnect-keycloak-custom-provider .
 RUN ./gradlew --refresh-dependencies assemble
 
-FROM quay.io/keycloak/keycloak:22.0.1
+FROM quay.io/keycloak/keycloak:22.0.4
 
 ENV KEYCLOAK_HOME /opt/keycloak
 
