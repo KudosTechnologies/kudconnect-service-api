@@ -1,4 +1,4 @@
-FROM maven:3.9.4-eclipse-temurin-17-alpine AS maven_builder
+FROM maven:3.9.6-eclipse-temurin-17-alpine AS maven_builder
 
 COPY kudconnect-service-api kudconnect-service-api
 COPY kudconnect-service kudconnect-service
