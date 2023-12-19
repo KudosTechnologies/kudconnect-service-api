@@ -82,7 +82,7 @@ dependencies {
     implementation group: 'org.keycloak', name: 'keycloak-admin-client', version: '22.0.1'
     runtimeOnly 'org.springframework.boot:spring-boot-starter-actuator'
 
-    implementation group: 'io.swagger.core.v3', name: 'swagger-annotations', version: '2.2.16'
+    implementation group: 'io.swagger.core.v3', name: 'swagger-annotations', version: '2.2.20'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     implementation group: 'org.mapstruct', name: 'mapstruct', version: '1.5.5.Final'
